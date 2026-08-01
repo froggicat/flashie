@@ -29,6 +29,7 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 - Anything walked through and checked while writing `project.md` / `plan.md` starts as `introduced`, not `seed`.
 - Anything I brought in from prior projects (HTML/CSS/JS basics) starts as `practicing`, not `understood` — until I've been quizzed I can't claim it's teachable knowledge.
 - **Exception (declared 2026-08-01):** low-level Python (variables, types, conditionals, loops, functions, lists/dicts, stdlib `import`) is `understood` on Amalia's explicit say-so. Exempt from quiz. This exception does *not* extend to Python-in-a-multi-file-project, pure functions, or reading stack traces — those stay `seed`.
+- **Exception (declared 2026-08-01):** git `init`, `status`, `add`, `commit`, `log`, and `clone` are `understood` on Amalia's explicit say-so (1 year of prior use). Exempt from quiz. This exception does *not* extend to `diff`, `push`, `pull`, `remote`, `branch`, `merge`, `.gitignore`, or advanced workflow (`rebase -i`, cherry-pick, reflog, submodules, hooks) — those remain quiz-eligible and upgrade only on project evidence.
 - Everything else this project will teach starts as `seed`.
 
 ## Date conventions
@@ -144,16 +145,16 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 
 | Concept | Status | Introduced | Last reviewed | Evidence |
 |---|---|---|---|---|
-| Source control — what it *is*, why to always use it | introduced | 2026-08-01 | 2026-08-01 | project.md §Source control defines it and gives rationale. |
-| `git` — the specific tool | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Source control. |
-| Repository — files + full change history | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Source control. |
-| Commit — one saved snapshot with a message | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Source control. |
-| Writing a *meaningful* commit message | introduced | 2026-08-01 | 2026-08-01 | plan.md §Section 1 deliverable: "clean, meaningful commits". |
-| GitHub — remote host for the repo | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Source control. |
-| `git status` / `git diff` / `git log` in daily use | seed | — | — | — |
-| Pushing to a remote (`git push`) | seed | — | — | — |
+| Source control — what it *is*, why to always use it | understood | 2026-08-01 | 2026-08-01 | Extension of the 2026-08-01 git say-so exception (1 year of git+GitHub use). Exempt from quiz. |
+| `git` — the specific tool | understood | 2026-08-01 | 2026-08-01 | Say-so exception (2026-08-01). Corroborated in task 1.1: ran `git init`, `git add`, `git commit`, `git log` end-to-end without help. |
+| Repository — files + full change history | understood | 2026-08-01 | 2026-08-01 | Say-so exception (2026-08-01). Corroborated: `/home/amalia/learning/.git/` now exists; HEAD at commit `8eb21de` on `main`. |
+| Commit — one saved snapshot with a message | understood | 2026-08-01 | 2026-08-01 | Say-so exception (2026-08-01). Corroborated: authored commit `8eb21de` ("initial commit! very exciting") on 2026-08-01. |
+| Writing a *meaningful* commit message | practicing | 2026-08-01 | 2026-08-01 | Wrote first commit message on 2026-08-01. "initial commit" is the canonical first-commit exception; upgrade to `understood` requires a richer "what + why" message on a substantive change. |
+| GitHub — remote host for the repo | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Source control. First hands-on evidence lands in task 1.6. |
+| `git status` / `git diff` / `git log` in daily use | practicing | 2026-08-01 | 2026-08-01 | 2026-08-01: ran `git status` (accurately predicted 5 untracked, no ignored) and `git log --oneline` (pasted output). `git diff` not yet exercised. |
+| Pushing to a remote (`git push`) | seed | — | — | Coming in task 1.6. |
 | Branching & merging | seed | — | — | — |
-| `.gitignore` — files git should never see | seed | — | — | Implicit in "secrets must not be committed" — will formalise in §Section 1. |
+| `.gitignore` — files git should never see | practicing | 2026-08-01 | 2026-08-01 | 2026-08-01: authored `/home/amalia/learning/.gitignore` from scratch, including `.env` and DB entries. Hit and self-corrected the "pattern must literally match on-disk filename" gotcha (`db.sqlite3` vs `db.sqlite`). |
 | Testing — why it exists, when it pays off | introduced | 2026-08-01 | 2026-08-01 | plan.md §Section 8 explains rationale ("why pure functions are easier to test"). |
 | `pytest` — the tool | seed | — | — | Coming in plan.md §Section 8. |
 | Unit test vs route smoke test | seed | — | — | Coming in plan.md §Section 8. |
