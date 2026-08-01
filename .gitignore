@@ -1,0 +1,29 @@
+# Python virtual environment — regenerated on each machine with `python -m venv .venv`.
+# Never committed: thousands of files, huge, and every developer's copy is different.
+.venv/
+
+# Python bytecode caches — auto-created the first time a module is imported.
+# Never committed: purely a performance optimisation, regenerated on demand.
+__pycache__/
+*.pyc
+
+# TODO(you): the app's SQLite database file.
+# Hint: plan.md §Section 4 names the exact filename it lives at.
+# Reason to ignore: it holds real per-machine data (your cards, your reviews) — not project code.
+db.sqlite
+
+
+# TODO(you): the local secrets file.
+# Hint: convention is a dot-prefixed filename that starts with the three letters "env".
+#       It doesn't exist yet — we're pre-fencing so we can't ever accidentally commit it.
+# Reason to ignore: holds the basic-auth password + any future API keys.
+.env
+
+
+# OS junk — Finder / Windows Explorer scatter these; harmless but noisy in diffs.
+.DS_Store
+Thumbs.db
+
+# Editor state — per-developer preferences, not part of the project.
+.vscode/
+.idea/
