@@ -47,6 +47,7 @@ The repo root holds git internals, the `.gitignore` fence, and — from `plan.md
 | &nbsp;&nbsp;`.venv/pyvenv.cfg` | known | 4-line pointer file recording which base Python this venv was cloned from (here: pyenv's 3.12.8). Machine-written by `python -m venv`; never hand-edited. |
 | &nbsp;&nbsp;`.venv/include/`, `.venv/lib64` | parked | C-headers folder and a `lib64 → lib` symlink. Packaging plumbing for building C extensions on 64-bit Linux. Revisit only if a `pip install` ever fails complaining about missing headers. |
 | `requirements.txt` | known | The source-of-truth for what's in `.venv/`: 7 pinned lines (Flask + its 6 transitive deps). Regenerate with `pip freeze > requirements.txt` after any `pip install`. Reproduce the env on a fresh machine with `pip install -r requirements.txt`. Committed; `.venv/` is not. |
+| `app.py` | known | The Flask app entry point. Creates the `app` instance and registers one route (`/`) via `@app.route`, whose view function returns the greeting text. When we run `flask run` in task 1.5, Flask imports this module, finds `app`, and starts a dev server that listens for HTTP requests. |
 
 ---
 
@@ -70,7 +71,6 @@ Nothing else exists in the repo yet. As soon as a new file or folder appears, it
 
 Expected upcoming (added on first sight, not now):
 
-- `app.py` — Flask entry point (task 1.4).
 - `templates/` — Jinja templates (`plan.md` §Section 2 onward).
 - `static/` — CSS and vanilla JS served directly (`plan.md` §Section 3 onward).
 - `specs/` — hand-written JSON spec files (`plan.md` §Section 2 onward).

@@ -60,9 +60,11 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 |---|---|---|---|---|
 | Files & folders in a repo (project layout as a design decision) | seed | — | — | — |
 | Dependency — someone else's code my project uses | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Core components / Environment & dependencies. |
-| Package manager (`pip`) | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Environment & dependencies. |
+| Package manager (`pip`) | practicing | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.3: ran `pip install flask` (installed 7 packages: Flask + 6 transitive deps) and `pip freeze > requirements.txt` inside the active venv. |
 | Virtual environment (`venv`) — isolation per project | practicing | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.2: created `.venv/` with `python3 -m venv .venv`, activated it, and confirmed `which python` → `~/flashcard-app/.venv/bin/python`. Correctly predicted `pip` without activation lands in system Python. Gap: first framing of *why* `.venv/` is gitignored was "privacy" — corrected to "huge + machine-specific + regenerable from `requirements.txt`". Upgrade to `understood` requires teaching that back cleanly in a later session. |
-| `requirements.txt` — pinned deps, one-command reinstall | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Environment & dependencies. |
+| `requirements.txt` — pinned deps, one-command reinstall | practicing | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.3: authored a 7-line pinned file via `pip freeze > requirements.txt`, committed it, and can articulate why `==` pinning + capturing transitive deps means reproducible envs. Upgrade to `understood` requires actually reproducing the env from it on a fresh machine (task 1.6 or later). |
+| Transitive dependencies (installing X pulls in what X needs) | introduced | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.3: predicted "~5 packages" for `pip install flask`; actual = 7 (Flask + Werkzeug, Jinja2, MarkupSafe, itsdangerous, click, blinker). Walked through what each is for. |
+| Version pinning (`==` vs `>=` vs `~=`) | introduced | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.3: `requirements.txt` uses `==` for exact-version reproducibility. Alternatives (`>=`, `~=`) named and parked. |
 | Installing pinned versions on a fresh machine | seed | — | — | — |
 | Flask project conventions (`templates/`, `static/`) | seed | — | — | Referenced in plan.md §Section 2–3 as upcoming. |
 | Python module vs package | seed | — | — | — |
@@ -149,7 +151,7 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 | `git` — the specific tool | understood | 2026-08-01 | 2026-08-01 | Say-so exception (2026-08-01). Corroborated in task 1.1: ran `git init`, `git add`, `git commit`, `git log` end-to-end without help. |
 | Repository — files + full change history | understood | 2026-08-01 | 2026-08-01 | Say-so exception (2026-08-01). Corroborated: `/home/amalia/learning/.git/` now exists; HEAD at commit `8eb21de` on `main`. |
 | Commit — one saved snapshot with a message | understood | 2026-08-01 | 2026-08-01 | Say-so exception (2026-08-01). Corroborated: authored commit `8eb21de` ("initial commit! very exciting") on 2026-08-01. |
-| Writing a *meaningful* commit message | practicing | 2026-08-01 | 2026-08-01 | Wrote first commit message on 2026-08-01. "initial commit" is the canonical first-commit exception; upgrade to `understood` requires a richer "what + why" message on a substantive change. |
+| Writing a *meaningful* commit message | understood | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.3: commit `dbe1281` — "activated venv and make requirements.txt to keep track of exact versions of dependencies". Clear what + genuine why (purpose of the file, not restatement). Minor nits (typo, "activated venv" isn't a git action) noted but concept is solid. |
 | GitHub — remote host for the repo | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Source control. First hands-on evidence lands in task 1.6. |
 | `git status` / `git diff` / `git log` in daily use | practicing | 2026-08-01 | 2026-08-01 | 2026-08-01: ran `git status` (accurately predicted 5 untracked, no ignored) and `git log --oneline` (pasted output). `git diff` not yet exercised. |
 | Pushing to a remote (`git push`) | seed | — | — | Coming in task 1.6. |
