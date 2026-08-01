@@ -67,7 +67,7 @@ Each section builds on the last. Each ends with something visibly working. I do 
 - [x] **1.1 — Turn this folder into a git repo & commit the planning docs.** Visible: `git log --oneline` shows one commit; `git status` clean. *Done 2026-08-01: commit `8eb21de` on `main` ("initial commit! very exciting"), tree clean.*
 - [x] **1.2 — Create & activate a Python virtual environment.** Visible: shell prompt shows `(.venv)`; `which python` points inside `.venv`. *Done 2026-08-01: `.venv/` created with `python3 -m venv .venv`; `which python` → `~/flashcard-app/.venv/bin/python`. Toured `bin/`, `lib/`, `pyvenv.cfg`; parked `include/` + `lib64`.*
 - [x] **1.3 — Install Flask & pin it in `requirements.txt`.** Visible: `requirements.txt` exists with pinned versions; `pip list` shows Flask; committed. *Done 2026-08-01: `pip install flask` installed 7 packages (Flask + 6 transitive deps); `pip freeze > requirements.txt` captured them all with `==` pins; committed as `dbe1281`.*
-- [ ] **1.4 — Write `app.py` — a minimum Flask app with one route returning "Spec Companion".** Visible: file exists, imports without error.
+- [x] **1.4 — Write `app.py` — a minimum Flask app with one route returning "Spec Companion".** Visible: file exists, imports without error. *Done 2026-08-01: 4-line minimum app (import → instance → `@app.route("/")` → `home()` returning "Spec Companion"). `python -c "import app"` returned silence.*
 - [ ] **1.5 — Run `flask run` and see "Spec Companion" at `localhost:5000` in a browser.** Visible: the page renders; committed.
 - [ ] **1.6 — Create a GitHub repo and push.** Visible: the repo loads on github.com and shows the commits.
 

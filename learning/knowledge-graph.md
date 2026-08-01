@@ -78,8 +78,9 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 | HTTP as browser↔server language | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Backend. |
 | Framework as a concept (handles boring parts) | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Backend. |
 | Flask specifically (why it, not Django/FastAPI) | introduced | 2026-08-01 | 2026-08-01 | plan.md §2 walks through alternatives. |
-| URL routes mapped to Python functions | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Backend. |
-| The Flask app object and `flask run` | seed | — | — | Coming in plan.md §Section 1 deliverable. |
+| URL routes mapped to Python functions | practicing | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.4: registered `home()` as the handler for `/` via `@app.route("/")` in `app.py`. Import check passed (silence). |
+| The Flask app object and `flask run` | introduced | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.4: created the app instance with `app = Flask(__name__)`. `flask run` still coming in 1.5. |
+| Decorators (`@` syntax attaching behaviour to a function) | introduced | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.4: used `@app.route("/")` on `home()`. Mental model given: "the `@` line above a function attaches that function to a URL"; decorator internals deferred. |
 | HTTP methods — GET vs POST | seed | — | — | Coming in plan.md §Section 5. |
 | Query parameters (`?spec_point=<id>`) | seed | — | — | Coming in plan.md §Section 6. |
 | Reading POSTed form data (`request.form`) | seed | — | — | Coming in plan.md §Section 5. |
