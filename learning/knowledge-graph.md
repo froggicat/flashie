@@ -61,7 +61,7 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 | Files & folders in a repo (project layout as a design decision) | seed | — | — | — |
 | Dependency — someone else's code my project uses | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Core components / Environment & dependencies. |
 | Package manager (`pip`) | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Environment & dependencies. |
-| Virtual environment (`venv`) — isolation per project | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Environment & dependencies. |
+| Virtual environment (`venv`) — isolation per project | practicing | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.2: created `.venv/` with `python3 -m venv .venv`, activated it, and confirmed `which python` → `~/flashcard-app/.venv/bin/python`. Correctly predicted `pip` without activation lands in system Python. Gap: first framing of *why* `.venv/` is gitignored was "privacy" — corrected to "huge + machine-specific + regenerable from `requirements.txt`". Upgrade to `understood` requires teaching that back cleanly in a later session. |
 | `requirements.txt` — pinned deps, one-command reinstall | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Environment & dependencies. |
 | Installing pinned versions on a fresh machine | seed | — | — | — |
 | Flask project conventions (`templates/`, `static/`) | seed | — | — | Referenced in plan.md §Section 2–3 as upcoming. |

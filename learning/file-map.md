@@ -38,6 +38,15 @@ The repo root holds git internals, the `.gitignore` fence, and — from `plan.md
 |---|---|---|
 | `.git/` | parked | Git's internal database for this repo — every commit, every branch, every object lives here. Machine-managed; **never edit by hand**. Created by `git init`. Revisit in task 1.6 (push) when we open `refs/` and see what `HEAD` actually points at. |
 | `.gitignore` | known | Fence of files git must pretend don't exist: `.venv/`, `__pycache__/`, `*.pyc`, `db.sqlite`, `.env`, OS junk, editor state. Manually maintained; edit whenever a new class of generated/private file starts appearing. |
+| `.vscode/` | known | Per-machine editor state for Cursor/VSCode. Fenced by `.gitignore` so it never ships with the repo. |
+| &nbsp;&nbsp;`.vscode/settings.json` | known | Two-line file that sets `editor.fontSize` to 20 — my local reading-comfort preference, not project config. |
+| `.venv/` | known | The Python virtual environment for this project — its own private interpreter, `pip`, and package pile. Gitignored not for privacy but because it's huge, machine-specific (hardcodes my absolute paths + Python version), and can be perfectly regenerated from `requirements.txt` (task 1.3). Delete it → recreate with `python3 -m venv .venv` + `pip install -r requirements.txt`. |
+| &nbsp;&nbsp;`.venv/bin/activate` | known | Shell script you `source` to prepend `.venv/bin` to `$PATH`, so `python` and `pip` resolve to the private copies inside `.venv/` instead of the system ones. Deactivate with `deactivate`. |
+| &nbsp;&nbsp;`.venv/bin/python`, `.venv/bin/pip` | known | The private interpreter and installer for this project. Once the venv is active, these are what `python` and `pip` on your `PATH` point at. |
+| &nbsp;&nbsp;`.venv/lib/` | known | TODO(you): one sentence — when you `pip install flask` (next task), which subfolder inside here will it land in, and why does that make deletion of `.venv/` a full reset? It drops it in a folder called site-packages|
+| &nbsp;&nbsp;`.venv/pyvenv.cfg` | known | 4-line pointer file recording which base Python this venv was cloned from (here: pyenv's 3.12.8). Machine-written by `python -m venv`; never hand-edited. |
+| &nbsp;&nbsp;`.venv/include/`, `.venv/lib64` | parked | C-headers folder and a `lib64 → lib` symlink. Packaging plumbing for building C extensions on 64-bit Linux. Revisit only if a `pip install` ever fails complaining about missing headers. |
+| `requirements.txt` | known | The source-of-truth for what's in `.venv/`: 7 pinned lines (Flask + its 6 transitive deps). Regenerate with `pip freeze > requirements.txt` after any `pip install`. Reproduce the env on a fresh machine with `pip install -r requirements.txt`. Committed; `.venv/` is not. |
 
 ---
 
@@ -61,8 +70,6 @@ Nothing else exists in the repo yet. As soon as a new file or folder appears, it
 
 Expected upcoming (added on first sight, not now):
 
-- `.venv/` — Python virtual environment (task 1.2). Will land as `parked` on creation, then we'll walk the 4–6 pieces inside that actually matter.
-- `requirements.txt` — pinned Python dependencies (task 1.3).
 - `app.py` — Flask entry point (task 1.4).
 - `templates/` — Jinja templates (`plan.md` §Section 2 onward).
 - `static/` — CSS and vanilla JS served directly (`plan.md` §Section 3 onward).
