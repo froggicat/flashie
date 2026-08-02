@@ -52,7 +52,7 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 | `import` from the standard library | understood | prior | 2026-08-01 | Amalia confirmed on 2026-08-01: "I already definitely know these." Exempt from quiz. |
 | Splitting my own code across multiple files & importing from them | seed | — | — | — |
 | Pure functions (no side effects, testable in isolation) | seed | — | — | — |
-| Reading an error message / stack trace | seed | — | — | — |
+| Reading an error message / stack trace | introduced | 2026-08-02 | 2026-08-02 | 2026-08-02 task 2.1: given the "bottom-up + find your frame" model on a real `TemplateNotFound` traceback. Two habits named: (1) the last line names the crime, (2) locate the frame whose path is your own file — that's where you fix things. Not yet applied to a *new* traceback unassisted; graduates to `practicing` when I read a fresh error without hand-holding. |
 
 ## 2. Structural — how a project is *shaped*
 
@@ -66,7 +66,7 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 | Transitive dependencies (installing X pulls in what X needs) | introduced | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.3: predicted "~5 packages" for `pip install flask`; actual = 7 (Flask + Werkzeug, Jinja2, MarkupSafe, itsdangerous, click, blinker). Walked through what each is for. |
 | Version pinning (`==` vs `>=` vs `~=`) | introduced | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.3: `requirements.txt` uses `==` for exact-version reproducibility. Alternatives (`>=`, `~=`) named and parked. |
 | Installing pinned versions on a fresh machine | seed | — | — | — |
-| Flask project conventions (`templates/`, `static/`) | seed | — | — | Referenced in plan.md §Section 2–3 as upcoming. |
+| Flask project conventions (`templates/`, `static/`) | practicing | 2026-08-02 | 2026-08-02 | 2026-08-02 task 2.1: created `templates/` next to `app.py` (the exact folder name Flask searches). `templates/home.html` served successfully by `render_template("home.html")`. Learned by failure first: without `templates/` the call raised `jinja2.exceptions.TemplateNotFound: home.html`. `static/` still coming in §Section 3. |
 | Python module vs package | seed | — | — | — |
 
 ## 3. Backend, HTTP & Flask
@@ -74,17 +74,17 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 | Concept | Status | Introduced | Last reviewed | Evidence |
 |---|---|---|---|---|
 | Frontend vs backend distinction | introduced | 2026-08-01 | 2026-08-01 | Explicit contrast drawn in project.md §Backend and §Frontend. |
-| Long-running server vs one-shot script | introduced | 2026-08-01 | 2026-08-01 | project.md: "A Python script runs, finishes, exits. A server stays up…" |
+| Long-running server vs one-shot script | practicing | 2026-08-01 | 2026-08-02 | 2026-08-02 task 2.1: observed it in the wild — `flask run` started fine even though `render_template("home.html")` would fail; error only fired when the browser hit `/`. Articulated unprompted: "code only runs on the web when you request and go to a URL." Small imprecision on wording ("the client gets served the code") — corrected in-session to: the server runs your code and sends back the *response*. Very close to `understood`; graduate once taught back cleanly. |
 | HTTP as browser↔server language | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Backend. |
 | Framework as a concept (handles boring parts) | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Backend. |
 | Flask specifically (why it, not Django/FastAPI) | introduced | 2026-08-01 | 2026-08-01 | plan.md §2 walks through alternatives. |
-| URL routes mapped to Python functions | practicing | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.4: registered `home()` as the handler for `/` via `@app.route("/")` in `app.py`. Import check passed (silence). |
-| The Flask app object and `flask run` | introduced | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.4: created the app instance with `app = Flask(__name__)`. `flask run` still coming in 1.5. |
+| URL routes mapped to Python functions | practicing | 2026-08-01 | 2026-08-02 | 2026-08-01 task 1.4: registered `home()` as the handler for `/` via `@app.route("/")`. 2026-08-02 task 2.1 corroboration: on `GET /`, Flask looked up `home` in its route table and called it — the stack trace explicitly showed the dispatch (`self.view_functions[rule.endpoint]` → `home`). |
+| The Flask app object and `flask run` | practicing | 2026-08-01 | 2026-08-02 | 2026-08-01 task 1.5: ran `flask run`, bound `127.0.0.1:5000`, observed 200/404. 2026-08-02 task 2.2: switched to `flask run --debug` after learning that plain `flask run` caches compiled templates in memory (so template edits don't take effect until a restart). Debug mode gives template auto-reload, Python auto-reload, and the interactive Werkzeug 500 page. `flask run --debug` is the daily dev command from here. |
 | Decorators (`@` syntax attaching behaviour to a function) | introduced | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.4: used `@app.route("/")` on `home()`. Mental model given: "the `@` line above a function attaches that function to a URL"; decorator internals deferred. |
 | HTTP methods — GET vs POST | seed | — | — | Coming in plan.md §Section 5. |
 | Query parameters (`?spec_point=<id>`) | seed | — | — | Coming in plan.md §Section 6. |
 | Reading POSTed form data (`request.form`) | seed | — | — | Coming in plan.md §Section 5. |
-| HTTP status codes (200, 302, 404, 500) | seed | — | — | Coming in plan.md §Section 8 (smoke tests assert 200). |
+| HTTP status codes (200, 302, 404, 500) | practicing | 2026-08-01 | 2026-08-02 | 2026-08-02 task 2.1: hit `/` with `render_template("home.html")` but no template file → terminal + browser showed a 500 ("Internal Server Error") at 18:01:54, then after creating the file the same URL returned 200 at 18:07:28. First hands-on 500 in the wild. Deeper coverage (302, custom error pages) still coming in §Section 8. |
 
 ## 4. Database — SQLite & SQL
 
@@ -111,9 +111,9 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 | HTML — page structure | practicing | prior | — | Prior projects (project.md background). Not yet quizzed. |
 | CSS — selectors and basic layout | practicing | prior | — | Prior projects. Not yet quizzed. |
 | JavaScript in the browser — basic syntax | practicing | prior | — | Prior projects. Not yet quizzed. |
-| Template as a concept (HTML with placeholders filled server-side) | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Frontend. |
-| Jinja — Flask's template language | introduced | 2026-08-01 | 2026-08-01 | Named in project.md §Frontend, chosen in plan.md §Section 2. |
-| `render_template` in a Flask route | seed | — | — | Coming in plan.md §Section 2. |
+| Template as a concept (HTML with placeholders filled server-side) | understood | 2026-08-01 | 2026-08-02 | 2026-08-02 task 2.2: predicted view-source correctly *twice* unprompted — first for cycle B ("just the plaintext"), then for cycle C ("we will just see the html of a ul and a bunch of li's in view-source"). Both times articulated that Jinja markers are stripped and only substituted HTML crosses the wire — the "filled server-side" half of the concept, in her own words. |
+| Jinja — Flask's template language | practicing | 2026-08-01 | 2026-08-02 | 2026-08-02 task 2.2: used `{{ spec_points }}` (interpolation) and a `{% for spec_point in spec_points %}<li>{{ spec_point }}</li>{% endfor %}` loop in `templates/home.html`. Loop variable named singular vs plural on instinct — good Python convention. Hit and diagnosed the "Jinja parser doesn't respect HTML comments" gotcha (a literal `{{ }}` inside a `<!-- -->` block still parses → `TemplateSyntaxError`); learned `{# ... #}` is Jinja's own comment syntax and IS stripped before rendering. |
+| `render_template` in a Flask route | practicing | 2026-08-02 | 2026-08-02 | 2026-08-02 task 2.1: added `render_template` to the Flask import and used it for a template with no data. 2026-08-02 task 2.2: extended the call to `render_template("home.html", spec_points=SPEC_POINTS)` — learned that keyword args become variables inside the template. Watched (via cycle A) that data is only visible on the page if the template *references* the variable — Flask does not silently paste anything you didn't ask for. |
 | Template inheritance (`base.html` + `{% extends %}`) | seed | — | — | Coming in plan.md §Section 3. |
 | Static files served by Flask (CSS/JS) | seed | — | — | Coming in plan.md §Section 3. |
 | Vanilla-JS keyboard event listeners (`keydown`) | seed | — | — | Coming in plan.md §Section 6 (space to flip, 1–5 to rate). |
@@ -152,17 +152,19 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 | `git` — the specific tool | understood | 2026-08-01 | 2026-08-01 | Say-so exception (2026-08-01). Corroborated in task 1.1: ran `git init`, `git add`, `git commit`, `git log` end-to-end without help. |
 | Repository — files + full change history | understood | 2026-08-01 | 2026-08-01 | Say-so exception (2026-08-01). Corroborated: `/home/amalia/learning/.git/` now exists; HEAD at commit `8eb21de` on `main`. |
 | Commit — one saved snapshot with a message | understood | 2026-08-01 | 2026-08-01 | Say-so exception (2026-08-01). Corroborated: authored commit `8eb21de` ("initial commit! very exciting") on 2026-08-01. |
-| Writing a *meaningful* commit message | understood | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.3: commit `dbe1281` — "activated venv and make requirements.txt to keep track of exact versions of dependencies". Clear what + genuine why (purpose of the file, not restatement). Minor nits (typo, "activated venv" isn't a git action) noted but concept is solid. |
-| GitHub — remote host for the repo | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Source control. First hands-on evidence lands in task 1.6. |
+| Writing a *meaningful* commit message | understood | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.3: commit `dbe1281` — "activated venv and make requirements.txt to keep track of exact versions of dependencies" — clear what + genuine why. 2026-08-01 tasks 1.4/1.5: commits `788b805` and `1e53d3e` describe what but not why; concept still `understood` (ladder only goes up) but next commits should re-include a purpose clause. |
+| GitHub — remote host for the repo | practicing | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.6 (done solo): created `github.com/froggicat/flashcard-app`, wired `origin` remote via SSH, pushed 5 commits. Local `main` now tracks `origin/main`. |
 | `git status` / `git diff` / `git log` in daily use | practicing | 2026-08-01 | 2026-08-01 | 2026-08-01: ran `git status` (accurately predicted 5 untracked, no ignored) and `git log --oneline` (pasted output). `git diff` not yet exercised. |
-| Pushing to a remote (`git push`) | seed | — | — | Coming in task 1.6. |
+| Pushing to a remote (`git push`) | practicing | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.6 (done solo): pushed all 5 commits from local `main` to `origin/main`; upstream tracking established (`git branch -vv` shows `[origin/main]`). |
+| `git remote` — pointing a local repo at a hosted one | practicing | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.6 (done solo): added `origin` = `git@github.com:froggicat/flashcard-app.git`. Verified with `git remote -v`. |
+| SSH-based git auth (vs HTTPS + PAT) | practicing | prior | 2026-08-01 | Key set up during prior Odin Project frontend work, so pre-dates this project. Corroborated 2026-08-01 task 1.6: pushed successfully via `git@github.com:froggicat/flashcard-app.git`. Not yet quizzed → stays `practicing` per seeding rules for prior-project skills. |
 | Branching & merging | seed | — | — | — |
 | `.gitignore` — files git should never see | practicing | 2026-08-01 | 2026-08-01 | 2026-08-01: authored `/home/amalia/learning/.gitignore` from scratch, including `.env` and DB entries. Hit and self-corrected the "pattern must literally match on-disk filename" gotcha (`db.sqlite3` vs `db.sqlite`). |
 | Testing — why it exists, when it pays off | introduced | 2026-08-01 | 2026-08-01 | plan.md §Section 8 explains rationale ("why pure functions are easier to test"). |
 | `pytest` — the tool | seed | — | — | Coming in plan.md §Section 8. |
 | Unit test vs route smoke test | seed | — | — | Coming in plan.md §Section 8. |
 | Local dev loop (edit → run → observe) | practicing | prior | — | project.md background: preferred workflow is iterating in code. Not yet quizzed. |
-| Debugging loop (reproduce → isolate → hypothesise → fix) | seed | — | — | — |
+| Debugging loop (reproduce → isolate → hypothesise → fix) | practicing | 2026-08-02 | 2026-08-02 | 2026-08-02 task 2.2: ran the loop twice, mostly independently. (1) "server logs 200 but page unchanged" mystery — reproduced (multiple refreshes, all 200), isolated (server-sent HTML via view-source was the *old* file), hypothesised (template caching in non-debug Flask — agent-assisted), fixed (`flask run --debug`). (2) `TemplateSyntaxError` from a `{{ }}` inside an HTML comment — reproduced (the 500 page), isolated (line 8 in traceback + Werkzeug debug page), hypothesised & fixed *solo* (removed the offending comment). |
 | Print-debugging & reading logs | practicing | prior | — | Prior Python work. Not yet quizzed. |
 
 ## 9. AI-era practice & design intuition

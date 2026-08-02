@@ -68,8 +68,10 @@ Each section builds on the last. Each ends with something visibly working. I do 
 - [x] **1.2 — Create & activate a Python virtual environment.** Visible: shell prompt shows `(.venv)`; `which python` points inside `.venv`. *Done 2026-08-01: `.venv/` created with `python3 -m venv .venv`; `which python` → `~/flashcard-app/.venv/bin/python`. Toured `bin/`, `lib/`, `pyvenv.cfg`; parked `include/` + `lib64`.*
 - [x] **1.3 — Install Flask & pin it in `requirements.txt`.** Visible: `requirements.txt` exists with pinned versions; `pip list` shows Flask; committed. *Done 2026-08-01: `pip install flask` installed 7 packages (Flask + 6 transitive deps); `pip freeze > requirements.txt` captured them all with `==` pins; committed as `dbe1281`.*
 - [x] **1.4 — Write `app.py` — a minimum Flask app with one route returning "Spec Companion".** Visible: file exists, imports without error. *Done 2026-08-01: 4-line minimum app (import → instance → `@app.route("/")` → `home()` returning "Spec Companion"). `python -c "import app"` returned silence.*
-- [ ] **1.5 — Run `flask run` and see "Spec Companion" at `localhost:5000` in a browser.** Visible: the page renders; committed.
-- [ ] **1.6 — Create a GitHub repo and push.** Visible: the repo loads on github.com and shows the commits.
+- [x] **1.5 — Run `flask run` and see "Spec Companion" at `localhost:5000` in a browser.** Visible: the page renders; committed. *Done 2026-08-01: dev server started, `/` returned "Spec Companion" (200), `/study` returned 404. Commits `788b805` (learning docs) + `1e53d3e` (app.py).*
+- [x] **1.6 — Create a GitHub repo and push.** Visible: the repo loads on github.com and shows the commits. *Done 2026-08-01 solo (first fully-independent task): `github.com/froggicat/flashcard-app` created, `origin` wired via SSH, 5 commits pushed, `main` tracks `origin/main`.*
+
+**Section 1 complete 2026-08-01.** Deliverable met: `flask run` on laptop → `localhost:5000` shows "Spec Companion"; whole project is a GitHub repo with clean, meaningful commits.
 
 ### Section 2 — Your first data-driven page
 
@@ -78,6 +80,14 @@ Each section builds on the last. Each ends with something visibly working. I do 
 **Deliverable:** a page at `/` that renders a hardcoded Python list of spec points as a nested HTML tree. No database yet — the data lives in a Python variable — but the templating is real.
 
 **Why now:** learning templating in isolation, before adding the complexity of a database, keeps the concepts separate in my head.
+
+**Tasks** (each ends in something visibly working):
+
+- [x] **2.1 — First real template.** Swap `home()`'s string return for `render_template("home.html")` and put a real HTML page at `templates/home.html`. Visible: `/` still greets you, but *view-source* shows a full HTML document (`<html>…</html>`), not plain text. *Done 2026-08-02: added `render_template` to Flask import, swapped return. Learned by failure first — hit `/` with no template → 500 + `jinja2.exceptions.TemplateNotFound: home.html` at 18:01:54. Created `templates/home.html` (DOCTYPE + html/head/body/title/h1) → same URL returned 200 at 18:07:28. Articulated import-time vs request-time distinction unprompted.*
+- [x] **2.2 — Render a flat Python list.** Add a hardcoded Python list of spec-point titles in `app.py`; pass it into the template; render as a `<ul>`. Introduces `{{ }}` and `{% for %}`. Visible: browser shows a bulleted list of the titles. *Done 2026-08-02 in three cycles: (A) add `SPEC_POINTS` list + `spec_points=SPEC_POINTS` kwarg — page unchanged (template didn't reference the var). (B) add `<p>{{ spec_points }}</p>` — page shows Python list repr `['Particles and radiation', 'Waves', 'Mechanics and materials', 'Electricity']`. (C) replace with `<ul>` + `{% for spec_point in spec_points %}<li>{{ spec_point }}</li>{% endfor %}` — proper bulleted list. En-route debug detours: template caching in non-debug Flask (fix: `flask run --debug`) and Jinja parser reading `{{ }}` inside HTML comments (fix: use `{# #}` instead).*
+- [ ] **2.3 — Nest one level.** Turn each spec point into `{"title": ..., "children": [...]}`; render a two-level `<ul>`. Introduces `{% if %}`. Visible: parents with children show a nested list underneath.
+- [ ] **2.4 — Make the tree template recursive.** Use a Jinja macro (or self-include) so any depth works. Add a 3-level example to prove it. Visible: a 3-deep spec point renders correctly using the same template block.
+- [ ] **2.5 — Extract the spec data into `specs.py`.** Move the hardcoded list out of `app.py` and import it back in. Teaches multi-file Python. Visible: `app.py` is short again; `from specs import SPEC` at the top; page still renders identically.
 
 ### Section 3 — Styling and small interactivity
 
