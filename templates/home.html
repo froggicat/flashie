@@ -5,10 +5,22 @@
   </head>
   <body>
     <h1>Spec Companion - Flashcard App</h1>
-    <ul>
-      {% for spec_point in spec_points %}
-        <li>{{ spec_point }}</li>
-      {% endfor %}
-    </ul>
+
+    {% macro render_tree(nodes) %}
+      <ul>
+        {% for node in nodes %}
+          <li>
+            {{ node.title }}
+            {% if node.children %}
+                {{ render_tree(node.children)}}
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endmacro %}
+
+    {# TODO(you): actually invoke the macro on `spec_points` below,
+       so the tree renders in the page. Same {{ ... }} syntax. #}
+    {{ render_tree(spec_points) }}
   </body>
 </html>
