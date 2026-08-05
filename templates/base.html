@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}Flashcard App{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    {% block content %}
+    {# Child templates fill this. Leave the block empty here. #}
+    {% endblock %}
+    <script src="{{ url_for('static', filename='tree.js') }}"></script>
+  </body>
+</html>

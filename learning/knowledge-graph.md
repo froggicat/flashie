@@ -52,8 +52,8 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 | `import` from the standard library | understood | prior | 2026-08-01 | Amalia confirmed on 2026-08-01: "I already definitely know these." Exempt from quiz. |
 | Splitting my own code across multiple files & importing from them | understood | 2026-08-02 | 2026-08-02 | 2026-08-02 task 2.5: performed a full behaviour-preserving refactor unaided. Authored `specs.py` from scratch (moved the 20-line `SPEC_POINTS` tree out of `app.py`), added `from specs import SPEC_POINTS` at the top of `app.py`, deleted the local definition. Naming conventions used correctly on instinct (`specs.py` lowercase, `SPEC_POINTS` UPPER_SNAKE). Articulated the point unprompted: *"my code is more readable and modular, as it's all split into separate locations"* — the actual definition of a refactor. Verified with `ls __pycache__/` that `specs.cpython-312.pyc` appeared, corroborating the "Python compiles + caches on first import" model. |
 | Pure functions (no side effects, testable in isolation) | seed | — | — | — |
-| Reading an error message / stack trace | introduced | 2026-08-02 | 2026-08-02 | 2026-08-02 task 2.1: given the "bottom-up + find your frame" model on a real `TemplateNotFound` traceback. Two habits named: (1) the last line names the crime, (2) locate the frame whose path is your own file — that's where you fix things. Not yet applied to a *new* traceback unassisted; graduates to `practicing` when I read a fresh error without hand-holding. |
-| Recursion (a function/macro calling itself, terminating on a base case) | practicing | 2026-08-02 | 2026-08-02 | 2026-08-02 task 2.4: wrote a recursive Jinja macro `render_tree(nodes)` whose body calls itself as `{{ render_tree(node.children) }}` when `{% if node.children %}` is true (the base case: children list empty → no self-call → recursion stops). Predicted correctly, unprompted, that adding a 4th level of nesting to the data would require *zero* template changes ("its recursive and just continues"). Same shape re-appears for filesystem walks, SQL trees via `parent_id` (§4), React component trees, etc. Close to `understood`; graduates after applying to a *non-templating* context. |
+| Reading an error message / stack trace | practicing | 2026-08-02 | 2026-08-04 | 2026-08-02: TemplateNotFound walkthrough. 2026-08-04 task 3.4: hit a Jinja TemplateSyntaxError from `{% endif %}{% else %}` + `{% endelse %}`; fixed by re-learning if/else/endif order from the error + file. Upgraded from `introduced` — applied to a fresh error with guidance, not a full solo read yet. |
+| Recursion (a function/macro calling itself, terminating on a base case) | understood | 2026-08-02 | 2026-08-05 | Jinja `render_tree` in §2. 2026-08-05 task 4.4: wrote recursive Python `insert_node` that INSERTs then calls itself for each child; base case = empty `children` (corrected from "parent_id is None"). Non-templating context — graduates to `understood`. |
 
 ## 2. Structural — how a project is *shaped*
 
@@ -67,7 +67,7 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 | Transitive dependencies (installing X pulls in what X needs) | introduced | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.3: predicted "~5 packages" for `pip install flask`; actual = 7 (Flask + Werkzeug, Jinja2, MarkupSafe, itsdangerous, click, blinker). Walked through what each is for. |
 | Version pinning (`==` vs `>=` vs `~=`) | introduced | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.3: `requirements.txt` uses `==` for exact-version reproducibility. Alternatives (`>=`, `~=`) named and parked. |
 | Installing pinned versions on a fresh machine | seed | — | — | — |
-| Flask project conventions (`templates/`, `static/`) | practicing | 2026-08-02 | 2026-08-02 | 2026-08-02 task 2.1: created `templates/` next to `app.py` (the exact folder name Flask searches). `templates/home.html` served successfully by `render_template("home.html")`. Learned by failure first: without `templates/` the call raised `jinja2.exceptions.TemplateNotFound: home.html`. `static/` still coming in §Section 3. |
+| Flask project conventions (`templates/`, `static/`) | practicing | 2026-08-02 | 2026-08-04 | 2026-08-02 task 2.1: created `templates/`. 2026-08-04 task 3.1: created `static/` + `style.css`; quiz — renaming `templates/` breaks lookup (answered correctly: 404/`TemplateNotFound`). Both folder names are Flask contracts. |
 | Python module vs package | introduced | 2026-08-02 | 2026-08-02 | 2026-08-02 task 2.5: taught that a module is a `.py` file and a package is a folder of modules; `from specs import ...` looks for `specs.py` (module); `from specs.py import ...` would fail because Python would interpret `specs` as a package name (folder) and look for `.py` *inside* it. Only modules used so far; packages coming when the project grows. |
 
 ## 3. Backend, HTTP & Flask
@@ -75,7 +75,7 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 | Concept | Status | Introduced | Last reviewed | Evidence |
 |---|---|---|---|---|
 | Frontend vs backend distinction | introduced | 2026-08-01 | 2026-08-01 | Explicit contrast drawn in project.md §Backend and §Frontend. |
-| Long-running server vs one-shot script | practicing | 2026-08-01 | 2026-08-02 | 2026-08-02 task 2.1: observed it in the wild — `flask run` started fine even though `render_template("home.html")` would fail; error only fired when the browser hit `/`. Articulated unprompted: "code only runs on the web when you request and go to a URL." Small imprecision on wording ("the client gets served the code") — corrected in-session to: the server runs your code and sends back the *response*. Very close to `understood`; graduate once taught back cleanly. |
+| Long-running server vs one-shot script | practicing | 2026-08-01 | 2026-08-04 | 2026-08-02 task 2.1: error only on request. 2026-08-04 task 3.1: CSS/link were fine but page blank because `flask run` had stopped — predicted "connection refused" correctly when curling `:5000`. Evidence that "nothing in the browser" can mean *no server*, not a bad template. Still one clean teach-back from `understood`. |
 | HTTP as browser↔server language | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Backend. |
 | Framework as a concept (handles boring parts) | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Backend. |
 | Flask specifically (why it, not Django/FastAPI) | introduced | 2026-08-01 | 2026-08-01 | plan.md §2 walks through alternatives. |
@@ -85,38 +85,38 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 | HTTP methods — GET vs POST | seed | — | — | Coming in plan.md §Section 5. |
 | Query parameters (`?spec_point=<id>`) | seed | — | — | Coming in plan.md §Section 6. |
 | Reading POSTed form data (`request.form`) | seed | — | — | Coming in plan.md §Section 5. |
-| HTTP status codes (200, 302, 404, 500) | practicing | 2026-08-01 | 2026-08-02 | 2026-08-02 task 2.1: hit `/` with `render_template("home.html")` but no template file → terminal + browser showed a 500 ("Internal Server Error") at 18:01:54, then after creating the file the same URL returned 200 at 18:07:28. First hands-on 500 in the wild. Deeper coverage (302, custom error pages) still coming in §Section 8. |
+| HTTP status codes (200, 302, 404, 500) | practicing | 2026-08-01 | 2026-08-04 | 2026-08-04 task 3.3: mis-predicted "missing stylesheet link → 500"; corrected to 200 + unstyled page. 500 = server exception while building the response; a missing `<link>` is still valid HTML. Strengthens the 200-vs-500 distinction. |
 
 ## 4. Database — SQLite & SQL
 
 | Concept | Status | Introduced | Last reviewed | Evidence |
 |---|---|---|---|---|
-| Database — what it's *for* (durable, structured storage) | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Database. |
-| SQL as the language for talking to a database | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Database. |
-| SQLite specifically (single file, no server, why it fits) | introduced | 2026-08-01 | 2026-08-01 | project.md §Database + plan.md §3 walk-through. |
-| Table / row / column | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Database. |
-| Schema — the shape of the tables | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Database. |
-| Foreign keys (a card belongs to one spec point) | seed | — | — | Coming in plan.md §Section 4. |
-| Self-referential trees (`parent_id`) | seed | — | — | Coming in plan.md §Section 4. |
-| `CREATE TABLE` | seed | — | — | Coming in plan.md §Section 4. |
-| `INSERT INTO` | seed | — | — | Coming in plan.md §Section 5. |
-| `SELECT ... WHERE` | seed | — | — | Coming in plan.md §Section 6. |
-| Aggregation SQL (`COUNT`, `GROUP BY`, `MAX`) | seed | — | — | Coming in plan.md §Section 7. |
-| Seeding a DB from a JSON file (`import_spec.py`) | seed | — | — | Coming in plan.md §Section 4. |
-| Persistence — why data survives across restarts (and what breaks it) | introduced | 2026-08-01 | 2026-08-01 | project.md §Deployment explains why volume matters for SQLite. |
+| Database — what it's *for* (durable, structured storage) | practicing | 2026-08-01 | 2026-08-05 | 2026-08-05 task 4.1: created `db.sqlite` on disk via `sqlite3`; data survives as a file independent of the Python process. |
+| SQL as the language for talking to a database | practicing | 2026-08-01 | 2026-08-05 | 2026-08-05 task 4.1: wrote `CREATE TABLE`, `INSERT INTO`, `SELECT *` as strings executed through Python. |
+| SQLite specifically (single file, no server, why it fits) | practicing | 2026-08-01 | 2026-08-05 | 2026-08-05 task 4.1: `sqlite3.connect("db.sqlite")` created the file; no separate DB server. |
+| Table / row / column | practicing | 2026-08-01 | 2026-08-05 | 2026-08-05 task 4.1: first mix-up (row↔column swapped) corrected — table = sheet, column = field kind, row = one record. Saw `[(1, 'hello sqlite')]` as one row with two columns. |
+| Schema — the shape of the tables | practicing | 2026-08-01 | 2026-08-05 | 2026-08-05 task 4.2: can explain id / title / parent_id on `spec_points`. |
+| Foreign keys (a card belongs to one spec point) | practicing | 2026-08-05 | 2026-08-05 | Self-FK + IntegrityError in 4.4; task 4.5: `cards.spec_point_id → spec_points` and `reviews.card_id → cards`. Quiz: create cards before reviews (correct). |
+| Self-referential trees (`parent_id`) | practicing | 2026-08-05 | 2026-08-05 | Schema + seed in 4.2–4.4; task 4.6: rebuilt nested tree from flat `parent_id` rows in Python (`nodes_by_id` + link pass). Articulated that `node` is the step-1 dict, not the SQL row. |
+| `SELECT ... WHERE` | practicing | 2026-08-05 | 2026-08-05 | Task 4.6: `SELECT id, title, parent_id FROM spec_points` powers the live page (still no WHERE; listing upgraded on evidence of real SELECT in the app path). |
+| `sqlite3` module (Python ↔ SQLite) | practicing | 2026-08-05 | 2026-08-05 | Full loop in scripts; task 4.6: `Row` factory + `load_spec_tree` used from Flask `home()`. |
+| Rebuilding a nested structure from flat parent_id rows | practicing | 2026-08-05 | 2026-08-05 | 2026-08-05 task 4.6: two-pass algorithm in `db.py`; page identical to in-memory tree — “thats crazy - its all the same.” |
 
 ## 5. Frontend — HTML, CSS, JS, templates
 
 | Concept | Status | Introduced | Last reviewed | Evidence |
 |---|---|---|---|---|
 | HTML — page structure | practicing | prior | — | Prior projects (project.md background). Not yet quizzed. |
-| CSS — selectors and basic layout | practicing | prior | — | Prior projects. Not yet quizzed. |
-| JavaScript in the browser — basic syntax | practicing | prior | — | Prior projects. Not yet quizzed. |
-| Template as a concept (HTML with placeholders filled server-side) | understood | 2026-08-01 | 2026-08-02 | 2026-08-02 task 2.2: predicted view-source correctly *twice* unprompted — first for cycle B ("just the plaintext"), then for cycle C ("we will just see the html of a ul and a bunch of li's in view-source"). Both times articulated that Jinja markers are stripped and only substituted HTML crosses the wire — the "filled server-side" half of the concept, in her own words. |
-| Jinja — Flask's template language | practicing | 2026-08-01 | 2026-08-02 | 2026-08-02 task 2.2: used `{{ }}` interpolation and a `{% for %}...{% endfor %}` loop. Hit + fixed the "Jinja parser doesn't respect HTML comments" gotcha; learned `{# #}` is Jinja's own comment syntax. Task 2.3: dot-access on dict fields (`{{ spec_point.title }}`), nested `{% for %}`, `{% if %}` on empty-list-is-falsy. Re-derived the "explicit-only rendering" principle unprompted. Task 2.4: authored a `{% macro render_tree(nodes) %}...{% endmacro %}` and called it both at top level (`{{ render_tree(spec_points) }}`) and *recursively from inside itself* (`{{ render_tree(node.children) }}`). Very close to `understood` — one more Jinja feature (template inheritance in §3) will confirm. |
-| `render_template` in a Flask route | practicing | 2026-08-02 | 2026-08-02 | 2026-08-02 task 2.1: added `render_template` to the Flask import and used it for a template with no data. 2026-08-02 task 2.2: extended the call to `render_template("home.html", spec_points=SPEC_POINTS)` — learned that keyword args become variables inside the template. Watched (via cycle A) that data is only visible on the page if the template *references* the variable — Flask does not silently paste anything you didn't ask for. |
-| Template inheritance (`base.html` + `{% extends %}`) | seed | — | — | Coming in plan.md §Section 3. |
-| Static files served by Flask (CSS/JS) | seed | — | — | Coming in plan.md §Section 3. |
+| CSS — selectors and basic layout | practicing | prior | 2026-08-04 | Through §3: layout, child combinator, specificity, and task 3.6 `::before` / `.tree-toggle.is-open::before` for carets. Fixed invalid `::before::before` chaining. |
+| CSS specificity (more specific selector wins) | practicing | 2026-08-04 | 2026-08-04 | 2026-08-04 task 3.5: observed `.spec-item > ul` beat `.is-open`; fixed with `.spec-item > ul.is-open`. |
+| CSS `::before` / `content` (generated caret text) | practicing | 2026-08-04 | 2026-08-04 | 2026-08-04 task 3.6: added `▶`/`▼` via `::before` + `content`; learned you don't nest `::before::before`. |
+| JavaScript in the browser — basic syntax | practicing | prior | 2026-08-04 | Task 3.5–3.6: click listeners + toggling a class on *two* elements (list + button) so CSS and JS stay in sync. |
+| Template as a concept (HTML with placeholders filled server-side) | understood | 2026-08-01 | 2026-08-04 | Prior §2 evidence. 2026-08-04 task 3.3: re-stated unprompted that view-source shows only the resulting plain HTML, not Jinja tags — same mental model, now with inheritance in the mix. |
+| Jinja — Flask's template language | practicing | 2026-08-01 | 2026-08-04 | §2 macros/loops/if; §3 extends/blocks. Task 3.4: `{% if %}…{% else %}…{% endif %}` in the recursive macro (parents → button, leaves → text). Learned Jinja has no `{% endelse %}` and `else` must precede `endif`. |
+| `render_template` in a Flask route | practicing | 2026-08-02 | 2026-08-04 | Still `render_template("home.html", ...)`; 3.3 showed the named file can be a *child* — Flask/Jinja pull in `base.html` automatically via `extends`. No `app.py` change required. |
+| Template inheritance (`base.html` + `{% extends %}`) | practicing | 2026-08-04 | 2026-08-04 | 2026-08-04 task 3.3: authored `base.html` with `title` + `content` blocks; rewrote `home.html` as `{% extends "base.html" %}` filling only `content`. Verified the child supplies the visible page body. Quiz: view-source won't show `{% extends %}` / `{% block %}` — answered correctly (Jinja runs server-side). |
+| Static files served by Flask (CSS/JS) | practicing | 2026-08-04 | 2026-08-04 | Task 3.1: CSS. Task 3.5: same pattern for `tree.js` via `url_for`; script placed after `{% block content %}` so buttons exist when it runs. |
+| `url_for` — Flask builds a URL from an endpoint name | practicing | 2026-08-04 | 2026-08-04 | Used for both `style.css` and `tree.js`. Quiz slip ("Jinja?") corrected: Jinja is the `{{ }}` syntax; `url_for` is the function that builds the path. |
 | Vanilla-JS keyboard event listeners (`keydown`) | seed | — | — | Coming in plan.md §Section 6 (space to flip, 1–5 to rate). |
 | CSS media query for mobile | seed | — | — | Coming in plan.md §Section 9. |
 | Why "no build step" is a real choice (vs React/Vue/bundler) | introduced | 2026-08-01 | 2026-08-01 | plan.md §Section 4 (Frontend approach) argues this. |

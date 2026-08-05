@@ -1,26 +1,23 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Specification Companion</title>
-  </head>
-  <body>
+
+    {% extends "base.html" %}
+
+    {% block content %}
     <h1>Spec Companion - Flashcard App</h1>
 
     {% macro render_tree(nodes) %}
       <ul>
         {% for node in nodes %}
-          <li>
-            {{ node.title }}
+          <li class="spec-item">
             {% if node.children %}
-                {{ render_tree(node.children)}}
+              <button type="button" class="tree-toggle"> {{node.title}} </button>
+              {{ render_tree(node.children)}}
+            {% else %}
+              {{node.title}}
             {% endif %}
           </li>
         {% endfor %}
       </ul>
     {% endmacro %}
-
-    {# TODO(you): actually invoke the macro on `spec_points` below,
-       so the tree renders in the page. Same {{ ... }} syntax. #}
+    
     {{ render_tree(spec_points) }}
-  </body>
-</html>
+    {% endblock %}

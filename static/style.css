@@ -1,0 +1,48 @@
+
+body {
+    background-color: #f2d8e7;
+    margin: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    font-size:xx-large;
+}
+
+li {
+    list-style: none;
+}
+
+.spec-item {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.spec-item > ul {
+    display: none;
+}
+
+.spec-item > ul.is-open {
+    display: block;
+}
+
+.tree-toggle {
+    background: none;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+}
+
+.tree-toggle:hover {
+    color: purple;
+}
+
+.tree-toggle::before {
+    content: "▶ ";
+}
+
+.tree-toggle.is-open::before {
+    content: "▼ ";
+}
+
+
