@@ -1,10 +1,6 @@
-"""Task 4.6 helpers — load flat spec_points rows and rebuild the nested tree.
-Import this from app.py (or paste the functions there — your call).
-"""
 import sqlite3
 
 DB_PATH = "db.sqlite"
-
 
 def get_connection():
     conn = sqlite3.connect(DB_PATH)
@@ -18,8 +14,6 @@ def load_spec_tree():
     conn = get_connection()
     cursor = conn.cursor()
 
-    # TODO(you): SELECT id, title, parent_id FROM spec_points
-    # rows = cursor.fetchall()
     cursor.execute("""
         SELECT id, title, parent_id FROM spec_points
     """)
@@ -40,7 +34,7 @@ def load_spec_tree():
 
     #fill nodes_by_id from rows
     for row in rows:
-        nodes_by_id[row["id"]] = {"title" : row["title"], "children" : []}
+        nodes_by_id[row["id"]] = {"id" : row["id"], "title" : row["title"], "children" : []}
 
     #link children / collect roots 
     for row in rows:

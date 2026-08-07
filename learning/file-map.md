@@ -47,21 +47,22 @@ The repo root holds git internals, the `.gitignore` fence, and — from `plan.md
 | &nbsp;&nbsp;`.venv/pyvenv.cfg` | known | 4-line pointer file recording which base Python this venv was cloned from (here: pyenv's 3.12.8). Machine-written by `python -m venv`; never hand-edited. |
 | &nbsp;&nbsp;`.venv/include/`, `.venv/lib64` | parked | C-headers folder and a `lib64 → lib` symlink. Packaging plumbing for building C extensions on 64-bit Linux. Revisit only if a `pip install` ever fails complaining about missing headers. |
 | `requirements.txt` | known | The source-of-truth for what's in `.venv/`: 7 pinned lines (Flask + its 6 transitive deps). Regenerate with `pip freeze > requirements.txt` after any `pip install`. Reproduce the env on a fresh machine with `pip install -r requirements.txt`. Committed; `.venv/` is not. |
-| `app.py` | known | Flask entry point. `/` calls `render_template("home.html", spec_points=load_spec_tree())` — data now comes from SQLite via `db.py`, not a Python constant. |
-| `db.py` | known | DB access layer. `get_connection()` opens `db.sqlite` with `Row` factory + FK pragma. `load_spec_tree()` SELECTs flat `spec_points` and rebuilds the nested `{title, children}` tree (two-pass: `nodes_by_id`, then link roots/children). Authored 2026-08-05 in task 4.6. |
-| `spec_tree.py` | parked | Former in-memory `SPEC_POINTS`. Unused after 4.6 — safe to delete whenever you tidy up. |
-| `specs.py` | — | Renamed to `spec_tree.py` in task 4.3 (name clash with `specs/` folder). |
+| `app.py` | known | Flask entry point. `/` → tree. `/spec/<id>` GET shows title + cards; POST reads form, INSERTs a card, redirects (PRG). |
+| `db.py` | known | DB access layer. `get_connection()` opens `db.sqlite` with `Row` factory + FK pragma. `load_spec_tree()` SELECTs flat `spec_points` and rebuilds nested `{id, title, children}` nodes (two-pass). Authored 2026-08-05; `id` field added 2026-08-07 for `/spec/<id>` links. |
+| `spec_tree.py` | — | Deleted (was gone by 2026-08-07). Former in-memory `SPEC_POINTS`; unused after home read from SQLite in 4.6. |
+| `specs.py` | — | Renamed to `spec_tree.py` in task 4.3 (name clash with `specs/` folder); then deleted with `spec_tree.py`. |
 | `specs/` | known | Folder for hand-written JSON exam specs. Named in `project.md`; created 2026-08-05 in task 4.3. |
 | &nbsp;&nbsp;`specs/physics.json` | known | Nested JSON tree of the AQA-ish Physics spec (title + children), same shape as old `SPEC_POINTS`. Source for the DB seed in 4.4. |
 | `__pycache__/` | known | Python's bytecode cache. Contains one `.pyc` per imported module (currently `app.cpython-312.pyc` + `specs.cpython-312.pyc`). Gitignored — huge-ish, machine-specific, regenerated on next import. Verified in task 2.5: the moment `specs.py` was first imported, its `.pyc` appeared. Delete the folder → Python recreates it silently on next run. |
 | `templates/` | known | The folder Flask searches when I call `render_template("...")`. Must sit next to `app.py` under this exact name — rename it and every template lookup fails with `jinja2.exceptions.TemplateNotFound` (seen 2026-08-02 at 18:01:54). |
 | &nbsp;&nbsp;`templates/base.html` | known | Shared shell: title block, CSS `<link>`, empty `content` block, and `<script src="{{ url_for('static', filename='tree.js') }}">` after content so the DOM exists before JS runs. |
-| &nbsp;&nbsp;`templates/home.html` | known | Child of `base.html`. Parents = `.tree-toggle` buttons; leaves = plain text; recursion emits nested `<ul>`s. |
+| &nbsp;&nbsp;`templates/home.html` | known | Child of `base.html`. Parents = `.tree-toggle` buttons; titles link to `/spec/<id>` via `url_for`; recursion emits nested `<ul>`s. |
+| &nbsp;&nbsp;`templates/spec_point.html` | known | Child of `base.html`. Spec point title, list of cards, and POST form (`front` / `back`) to add a card. Authored 2026-08-07 in tasks 5.2–5.3. |
 | `static/` | known | Sibling of `templates/`. Flask serves files here at `/static/...`. |
 | &nbsp;&nbsp;`static/style.css` | known | Layout, collapse/expand (`.spec-item > ul` / `.is-open`), toggle button chrome reset, hover, and `::before` carets (`▶`/`▼`). |
 | &nbsp;&nbsp;`static/tree.js` | known | Click handler: toggles `is-open` on the child `<ul>` *and* the button (so CSS can flip the caret). |
 
-| `db.sqlite` | known | SQLite DB (gitignored). Tables: `spec_points` (seeded, ~16 rows), `cards` (empty), `reviews` (empty). |
+| `db.sqlite` | known | SQLite DB (gitignored). Tables: `spec_points` (seeded), `cards` (10 GCSE Electricity cards from task 5.6), `reviews` (empty). |
 | `import_spec.py` | known | One-shot seed script: loads `specs/physics.json`, recursively INSERTs into `spec_points` with correct `parent_id`. Re-runnable (clears rows first). Authored 2026-08-05 in task 4.4. |
 | `explore_db.py` | known | Scratch schema script — evolving; task 4.5 uses it to CREATE empty `cards` + `reviews`. |
 

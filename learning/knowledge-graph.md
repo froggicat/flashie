@@ -79,13 +79,14 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 | HTTP as browser↔server language | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Backend. |
 | Framework as a concept (handles boring parts) | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Backend. |
 | Flask specifically (why it, not Django/FastAPI) | introduced | 2026-08-01 | 2026-08-01 | plan.md §2 walks through alternatives. |
-| URL routes mapped to Python functions | practicing | 2026-08-01 | 2026-08-02 | 2026-08-01 task 1.4: registered `home()` as the handler for `/` via `@app.route("/")`. 2026-08-02 task 2.1 corroboration: on `GET /`, Flask looked up `home` in its route table and called it — the stack trace explicitly showed the dispatch (`self.view_functions[rule.endpoint]` → `home`). |
+| URL routes mapped to Python functions | practicing | 2026-08-01 | 2026-08-07 | Prior `/` evidence. 2026-08-07 task 5.1: second route `spec_point` for `/spec/<int:id>` — predicted correctly that home fails until the endpoint exists, then links resolve. |
+| Path parameters (`/spec/<int:id>`) — URL piece → function argument | practicing | 2026-08-07 | 2026-08-07 | 2026-08-07 task 5.1: wrote `@app.route("/spec/<int:id>")` + `def spec_point(id):`; used `id` in a parameterized SELECT. Distinct from query params (`?…`) which stay seed until §6. |
 | The Flask app object and `flask run` | practicing | 2026-08-01 | 2026-08-02 | 2026-08-01 task 1.5: ran `flask run`, bound `127.0.0.1:5000`, observed 200/404. 2026-08-02 task 2.2: switched to `flask run --debug` after learning that plain `flask run` caches compiled templates in memory (so template edits don't take effect until a restart). Debug mode gives template auto-reload, Python auto-reload, and the interactive Werkzeug 500 page. `flask run --debug` is the daily dev command from here. |
 | Decorators (`@` syntax attaching behaviour to a function) | introduced | 2026-08-01 | 2026-08-01 | 2026-08-01 task 1.4: used `@app.route("/")` on `home()`. Mental model given: "the `@` line above a function attaches that function to a URL"; decorator internals deferred. |
-| HTTP methods — GET vs POST | seed | — | — | Coming in plan.md §Section 5. |
+| HTTP methods — GET vs POST | practicing | 2026-08-07 | 2026-08-07 | 5.3: 405. 2026-08-07 task 5.4: same function branches on `request.method`; GET shows page, POST inserts then redirects. Articulated the fork clearly after a slower re-teach. |
 | Query parameters (`?spec_point=<id>`) | seed | — | — | Coming in plan.md §Section 6. |
-| Reading POSTed form data (`request.form`) | seed | — | — | Coming in plan.md §Section 5. |
-| HTTP status codes (200, 302, 404, 500) | practicing | 2026-08-01 | 2026-08-04 | 2026-08-04 task 3.3: mis-predicted "missing stylesheet link → 500"; corrected to 200 + unstyled page. 500 = server exception while building the response; a missing `<link>` is still valid HTML. Strengthens the 200-vs-500 distinction. |
+| Reading POSTed form data (`request.form`) | practicing | 2026-08-07 | 2026-08-07 | 2026-08-07 task 5.4: `request.form["front"]` / `["back"]` match the input `name=` attrs; used those values in INSERT. |
+| HTTP status codes (200, 302, 404, 500) | practicing | 2026-08-01 | 2026-08-07 | Prior 500/200. 2026-08-07 task 5.4: POST → **302** redirect to same `/spec/<id>` (PRG), then GET 200 with updated list. |
 
 ## 4. Database — SQLite & SQL
 
@@ -96,9 +97,14 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 | SQLite specifically (single file, no server, why it fits) | practicing | 2026-08-01 | 2026-08-05 | 2026-08-05 task 4.1: `sqlite3.connect("db.sqlite")` created the file; no separate DB server. |
 | Table / row / column | practicing | 2026-08-01 | 2026-08-05 | 2026-08-05 task 4.1: first mix-up (row↔column swapped) corrected — table = sheet, column = field kind, row = one record. Saw `[(1, 'hello sqlite')]` as one row with two columns. |
 | Schema — the shape of the tables | practicing | 2026-08-01 | 2026-08-05 | 2026-08-05 task 4.2: can explain id / title / parent_id on `spec_points`. |
-| Foreign keys (a card belongs to one spec point) | practicing | 2026-08-05 | 2026-08-05 | Self-FK + IntegrityError in 4.4; task 4.5: `cards.spec_point_id → spec_points` and `reviews.card_id → cards`. Quiz: create cards before reviews (correct). |
+| Foreign keys (a card belongs to one spec point) | practicing | 2026-08-05 | 2026-08-07 | 5.2 query. 2026-08-07 task 5.5: predicted + verified isolation — `/spec/3` shows cards, `/spec/16` empty; reasoned that different points don't share cards because each row's `spec_point_id` matches only one page's id. |
 | Self-referential trees (`parent_id`) | practicing | 2026-08-05 | 2026-08-05 | Schema + seed in 4.2–4.4; task 4.6: rebuilt nested tree from flat `parent_id` rows in Python (`nodes_by_id` + link pass). Articulated that `node` is the step-1 dict, not the SQL row. |
-| `SELECT ... WHERE` | practicing | 2026-08-05 | 2026-08-05 | Task 4.6: `SELECT id, title, parent_id FROM spec_points` powers the live page (still no WHERE; listing upgraded on evidence of real SELECT in the app path). |
+| `CREATE TABLE` | practicing | 2026-08-05 | 2026-08-05 | `notes`, `spec_points`, `cards`, `reviews` across 4.1–4.5. |
+| `INSERT INTO` | practicing | 2026-08-05 | 2026-08-07 | Seed scripts in §4. 2026-08-07 task 5.4: live INSERT from the web form into `cards` with `(spec_point_id, front, back)` + `commit()`. |
+| `SELECT ... WHERE` | practicing | 2026-08-05 | 2026-08-07 | 5.1: title by id. 2026-08-07 task 5.2: second query on same connection — `SELECT front, back FROM cards WHERE spec_point_id = ?` before `conn.close()`. |
+| Aggregation SQL (`COUNT`, `GROUP BY`, `MAX`) | seed | — | — | Coming in plan.md §Section 7. |
+| Seeding a DB from a JSON file (`import_spec.py`) | practicing | 2026-08-05 | 2026-08-05 | Task 4.4: recursive INSERT from JSON; 16 rows. |
+| Persistence — why data survives across restarts (and what breaks it) | practicing | 2026-08-01 | 2026-08-07 | File + commit earlier. 2026-08-07 task 5.6: cleared cards with `DELETE`, then re-authored 10 via the UI — data lives in `db.sqlite` independent of the Flask process. |
 | `sqlite3` module (Python ↔ SQLite) | practicing | 2026-08-05 | 2026-08-05 | Full loop in scripts; task 4.6: `Row` factory + `load_spec_tree` used from Flask `home()`. |
 | Rebuilding a nested structure from flat parent_id rows | practicing | 2026-08-05 | 2026-08-05 | 2026-08-05 task 4.6: two-pass algorithm in `db.py`; page identical to in-memory tree — “thats crazy - its all the same.” |
 
@@ -106,17 +112,17 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 
 | Concept | Status | Introduced | Last reviewed | Evidence |
 |---|---|---|---|---|
-| HTML — page structure | practicing | prior | — | Prior projects (project.md background). Not yet quizzed. |
+| HTML — page structure | practicing | prior | 2026-08-07 | Prior projects. 2026-08-07 task 5.3: authored `<form method="post">` with named `<input>`s + submit on `spec_point.html`. |
 | CSS — selectors and basic layout | practicing | prior | 2026-08-04 | Through §3: layout, child combinator, specificity, and task 3.6 `::before` / `.tree-toggle.is-open::before` for carets. Fixed invalid `::before::before` chaining. |
 | CSS specificity (more specific selector wins) | practicing | 2026-08-04 | 2026-08-04 | 2026-08-04 task 3.5: observed `.spec-item > ul` beat `.is-open`; fixed with `.spec-item > ul.is-open`. |
 | CSS `::before` / `content` (generated caret text) | practicing | 2026-08-04 | 2026-08-04 | 2026-08-04 task 3.6: added `▶`/`▼` via `::before` + `content`; learned you don't nest `::before::before`. |
 | JavaScript in the browser — basic syntax | practicing | prior | 2026-08-04 | Task 3.5–3.6: click listeners + toggling a class on *two* elements (list + button) so CSS and JS stay in sync. |
 | Template as a concept (HTML with placeholders filled server-side) | understood | 2026-08-01 | 2026-08-04 | Prior §2 evidence. 2026-08-04 task 3.3: re-stated unprompted that view-source shows only the resulting plain HTML, not Jinja tags — same mental model, now with inheritance in the mix. |
 | Jinja — Flask's template language | practicing | 2026-08-01 | 2026-08-04 | §2 macros/loops/if; §3 extends/blocks. Task 3.4: `{% if %}…{% else %}…{% endif %}` in the recursive macro (parents → button, leaves → text). Learned Jinja has no `{% endelse %}` and `else` must precede `endif`. |
-| `render_template` in a Flask route | practicing | 2026-08-02 | 2026-08-04 | Still `render_template("home.html", ...)`; 3.3 showed the named file can be a *child* — Flask/Jinja pull in `base.html` automatically via `extends`. No `app.py` change required. |
+| `render_template` in a Flask route | practicing | 2026-08-02 | 2026-08-07 | Home + inheritance earlier. 2026-08-07 task 5.2: second page — `render_template("spec_point.html", title=…, cards=…)` and articulated that kwargs become template names (`title` → `{{ title }}`). |
 | Template inheritance (`base.html` + `{% extends %}`) | practicing | 2026-08-04 | 2026-08-04 | 2026-08-04 task 3.3: authored `base.html` with `title` + `content` blocks; rewrote `home.html` as `{% extends "base.html" %}` filling only `content`. Verified the child supplies the visible page body. Quiz: view-source won't show `{% extends %}` / `{% block %}` — answered correctly (Jinja runs server-side). |
 | Static files served by Flask (CSS/JS) | practicing | 2026-08-04 | 2026-08-04 | Task 3.1: CSS. Task 3.5: same pattern for `tree.js` via `url_for`; script placed after `{% block content %}` so buttons exist when it runs. |
-| `url_for` — Flask builds a URL from an endpoint name | practicing | 2026-08-04 | 2026-08-04 | Used for both `style.css` and `tree.js`. Quiz slip ("Jinja?") corrected: Jinja is the `{{ }}` syntax; `url_for` is the function that builds the path. |
+| `url_for` — Flask builds a URL from an endpoint name | practicing | 2026-08-04 | 2026-08-07 | Static files earlier. 2026-08-07 task 5.1: `url_for('spec_point', id=node.id)` in the tree macro; saw `BuildError` when the endpoint name didn’t exist yet — `url_for` runs at render time, not on click. |
 | Vanilla-JS keyboard event listeners (`keydown`) | seed | — | — | Coming in plan.md §Section 6 (space to flip, 1–5 to rate). |
 | CSS media query for mobile | seed | — | — | Coming in plan.md §Section 9. |
 | Why "no build step" is a real choice (vs React/Vue/bundler) | introduced | 2026-08-01 | 2026-08-01 | plan.md §Section 4 (Frontend approach) argues this. |
@@ -164,7 +170,7 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 | Testing — why it exists, when it pays off | introduced | 2026-08-01 | 2026-08-01 | plan.md §Section 8 explains rationale ("why pure functions are easier to test"). |
 | `pytest` — the tool | seed | — | — | Coming in plan.md §Section 8. |
 | Unit test vs route smoke test | seed | — | — | Coming in plan.md §Section 8. |
-| Local dev loop (edit → run → observe) | practicing | prior | — | project.md background: preferred workflow is iterating in code. Not yet quizzed. |
+| Local dev loop (edit → run → observe) | practicing | prior | 2026-08-07 | 2026-08-07 §5: full loop on cards feature — form → POST → see list; wiped/rebuilt card content through the running app. |
 | Debugging loop (reproduce → isolate → hypothesise → fix) | practicing | 2026-08-02 | 2026-08-02 | 2026-08-02 task 2.2: ran the loop twice, mostly independently. (1) "server logs 200 but page unchanged" mystery — reproduced (multiple refreshes, all 200), isolated (server-sent HTML via view-source was the *old* file), hypothesised (template caching in non-debug Flask — agent-assisted), fixed (`flask run --debug`). (2) `TemplateSyntaxError` from a `{{ }}` inside an HTML comment — reproduced (the 500 page), isolated (line 8 in traceback + Werkzeug debug page), hypothesised & fixed *solo* (removed the offending comment). |
 | Print-debugging & reading logs | practicing | prior | — | Prior Python work. Not yet quizzed. |
 

@@ -137,6 +137,17 @@ Each section builds on the last. Each ends with something visibly working. I do 
 
 **Why now:** this is the first real feature. It's small — form + POST + INSERT + list — but it exercises the full stack for the first time.
 
+**Tasks** (each ends in something visibly working):
+
+- [x] **5.1 — Spec point has a URL.** Put each node's `id` into the tree from `load_spec_tree`; make titles link to `/spec/<id>`; stub route shows that point's title. Visible: click a topic → new URL + title on the page. *Done 2026-08-07: `id` on each tree node; `url_for('spec_point', id=…)` in macro (learned BuildError/500 when endpoint missing vs 404 after click); stub `@app.route("/spec/<int:id>")` + parameterized `SELECT title … WHERE id = ?` → `/spec/3` returns `Radioactivity`.*
+- [x] **5.2 — List cards for a point.** Query `cards` for that `spec_point_id`; render a simple list (empty is fine). Visible: `/spec/<id>` shows a Cards section. *Done 2026-08-07: `templates/spec_point.html` (extends base, `{{ title }}` + `{% for card in cards %}`); route SELECTs title then `front, back FROM cards WHERE spec_point_id = ?`, passes both to template. `/spec/3` → Radioactivity + empty list (table still empty — predicted correctly).*
+- [x] **5.3 — Add-card form.** HTML `<form method="POST">` with front + back fields on the spec page. Visible: form appears under the title. *Done 2026-08-07: `spec_point.html` form with `name="front"` / `name="back"` + submit. Predicted “won’t do anything” on submit → actual **405 Method Not Allowed** (POST sent; route is GET-only until 5.4).*
+- [x] **5.4 — POST → INSERT → redirect.** Same route accepts POST, reads `request.form`, inserts a row, redirects to GET. Visible: submit → card shows in the list; refresh doesn't duplicate. *Done 2026-08-07: `methods=["GET","POST"]`; POST branch reads `request.form["front"/"back"]`, parameterized INSERT + commit, `redirect(url_for("spec_point", id=id))` (PRG). Verified 302 then list updates; refresh doesn't re-POST.*
+- [x] **5.5 — Prove the FK/`WHERE`.** Add a card under point A; open point B — B does not show A's cards. Visible: each point only lists its own cards. *Done 2026-08-07: predicted correctly — `/spec/16` empty while `/spec/3` lists Radioactivity's cards; Electricity card wouldn't appear under Radioactivity. Verified: all 3 DB rows have `spec_point_id=3`; Electricity page empty `<ul>`.*
+- [x] **5.6 — Hand-author ~10 real cards.** Use the UI for your subject. Visible: real study content in the DB; section deliverable met. *Done 2026-08-07: cleared `cards`, authored 10 GCSE Electricity cards via the form (current, p.d., meters, Ohm's law, series/parallel, etc.).*
+
+**Section 5 complete 2026-08-07.** Deliverable met: click a spec point → form → add card (front + back) → listed under that point; ~10 real cards in SQLite for Electricity.
+
 ### Section 6 — Core feature: study mode + scheduler
 
 **What I'll learn:** query parameters (`?spec_point=<id>`), selecting rows in Python from a database query, writing to a `reviews` table, a pure-function scheduler in its own `scheduler.py` module, keyboard event handlers in JS.

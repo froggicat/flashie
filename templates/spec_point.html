@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    <h2>Cards: </h2>
+    <ul>
+        {% for card in cards %}
+            <li>
+                {{ card.front }} / {{ card.back }}
+            </li>
+        {% endfor %}
+    </ul>
+    <form method="post">
+        <input type="text" name="front">
+        <input type="text" name="back">
+        <button type="submit">Add card</button>
+    </form>
+{% endblock %}

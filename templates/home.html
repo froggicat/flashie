@@ -9,10 +9,10 @@
         {% for node in nodes %}
           <li class="spec-item">
             {% if node.children %}
-              <button type="button" class="tree-toggle"> {{node.title}} </button>
+              <button type="button" class="tree-toggle"> <a href="{{ url_for('spec_point', id=node.id )}}"> {{node.title}} </a> </button>
               {{ render_tree(node.children)}}
             {% else %}
-              {{node.title}}
+            <a href="{{ url_for('spec_point', id=node.id )}}"> {{node.title}} </a>
             {% endif %}
           </li>
         {% endfor %}
