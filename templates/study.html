@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Studying: {{ title }}</h1>
+
+  <div class="flashcard">
+    <h1 id="front">{{ card.front }}</h1>
+  </div>
+  <div class="flashcard">
+    <h2 id="back">{{ card.back }}</h2>
+  </div>
+
+  {# Rates the current card. Hidden fields carry ids the server needs;
+     each button submits a different rating value under the same name. #}
+  <form method="post">
+    <input type="hidden" name="card_id" value="{{ card.id }}">
+    <input type="hidden" name="spec_point" value="{{ spec_point_id }}">
+
+    <p>How well did you know it?</p>
+    <button type="submit" name="rating" value="1">1</button>
+    <button type="submit" name="rating" value="2">2</button>
+    <button type="submit" name="rating" value="3">3</button>
+    <button type="submit" name="rating" value="4">4</button>
+    <button type="submit" name="rating" value="5">5</button>
+  </form>
+
+  <script src="{{ url_for('static', filename='study.js') }}"></script>
+{% endblock %}

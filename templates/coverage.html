@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Coverage{% endblock %}
+
+{% block content %}
+<h1>Coverage</h1>
+<p>Pick a gap (cyan) to add cards, or a topic with cards due to study.</p>
+   <ul class="coverage-list">
+   {% for row in rows %}
+      <li {% if row["card_count"] == 0 %} class="no-cards" {% endif %}>
+         <a href="{{ url_for('spec_point', id=row["id"]) }}">{{ row["title"] }}</a>
+         — {{ row["card_count"] }} card(s), {{ row["due_count"] }} due,
+         last reviewed:
+         {% if row["last_reviewed"] %}
+            {{ row["last_reviewed"] }}
+         {% else %}
+            never
+         {% endif %}
+         <a href="{{ url_for('study', spec_point=row["id"]) }}">Study</a>
+      </li>
+   {% endfor %}
+   </ul>
+
+{% endblock %}

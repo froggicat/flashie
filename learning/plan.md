@@ -156,6 +156,17 @@ Each section builds on the last. Each ends with something visibly working. I do 
 
 **Why now:** this is the *point* of the app. Doing it after cards exist means I have real cards to study with, not lorem-ipsum test cards.
 
+**Tasks** (each ends in something visibly working):
+
+- [x] **6.1 — Study URL with a query param.** Add `/study` that reads `?spec_point=<id>` and shows that point's title (stub page). Visible: open `/study?spec_point=16` → see "Electricity" (or whatever that id is). *Done 2026-08-08: `request.args.get("spec_point")`; missing → message; bad id → message; `/study?spec_point=16` → `Electricity`. Corrected quiz (path vs query = URL job, not “DB vs list”); dug into 404≠no server and `fetchone()` → `None` vs crash; fixed `return f"{row}"` → `output["title"]`.*
+- [x] **6.2 — Show one card's front.** Query cards for that spec point; pick one; render only the front on the study page. Visible: a real card front appears (back still hidden). *Done 2026-08-08: `SELECT … LIMIT 1` + `fetchone`; `study.html` shows `card.front` only; Electricity → first card front; Particles (id 1) → no-cards message. Predicted both correctly (including non-random first row).*
+- [x] **6.3 — Flip to reveal the back.** Vanilla JS hides the back until Space (or a click) reveals it. Visible: press Space → back appears. *Done 2026-08-08: authored `study.js` (`keydown` + `e.code === "Space"` + `preventDefault` + `classList.toggle("is-flipped")`); CSS hide/show via `#back` / `#back.is-flipped`; debugged `getElementById("#back")` (null) → `getElementById("back")`; learned `border-style` required for borders to paint. Quiz: listen on `document` so focus isn’t required on the card (correct).*
+- [x] **6.4 — Rate → write a `reviews` row.** Buttons (or form) POST a rating 1–5; server INSERTs into `reviews` with a placeholder `next_due_at`, then redirects back to study. Visible: rate a card → `reviews` has a new row; refresh doesn't re-POST. *Done 2026-08-08: form POSTs `card_id`/`rating`/`spec_point`; INSERT + `redirect(url_for("study", spec_point=…))` (PRG). Same card after redirect is expected (`LIMIT 1` always picks first row — next card is 6.6). Quiz: placeholder OK until scheduler (correct).*
+- [x] **6.5 — Real scheduler in `scheduler.py`.** Pure function: `next_due_at = now + rating² days`. Use it on INSERT. Visible: rate 3 → `next_due_at` is ~9 days out (check in Python or DB Browser). *Done 2026-08-08: authored pure `next_due_at(rating, now)` with `timedelta` + `isoformat`; wired into study POST. Rate 3 → `2026-08-17…`; rate 5 → `2026-09-02…`. Quiz: `now` as arg for testability (correct). Fixed typo `noe` and `import datetime` vs `from datetime import datetime`.*
+- [x] **6.6 — Keyboard + next card.** Space flips; 1–5 rates via keyboard; after rating, load the next due card (or "all done"). Visible: a real keyboard-driven mini-session; section deliverable met. *Done 2026-08-08: due-card SELECT with `NOT IN (… next_due_at > now)`; empty → "All done for now"; `study.js` Space flip + keys 1–5 click rating buttons. Verified next card after rate + keyboard rating.*
+
+**Section 6 complete 2026-08-08.** Deliverable met: `/study?spec_point=<id>` runs a real session — one due card at a time, Space to flip, 1–5 to rate (keys or buttons), each rating writes a `reviews` row with `next_due_at = now + rating² days`, then the next due card (or all done).
+
 ### Section 7 — Core feature: coverage dashboard
 
 **What I'll learn:** aggregation SQL (`COUNT`, `GROUP BY`, `MAX`), building a summary view from multiple tables, template loops with conditional styling (highlight zero-card spec points).
@@ -163,6 +174,18 @@ Each section builds on the last. Each ends with something visibly working. I do 
 **Deliverable:** open `/coverage` and see, for every spec point in my chosen subject: total cards, cards due today, when it was last reviewed, zero-card points highlighted. I can look at it and instantly answer "what should I revise next?"
 
 **Why now:** this closes the loop the app promises — spec-aligned coverage. Without it, the app is just Anki-with-extra-steps.
+
+**Tasks** (each ends in something visibly working):
+
+- [x] **7.1 — Stub `/coverage` page.** New route + template that lists every `spec_points` title (plain `SELECT`, no aggregates yet). Visible: open `/coverage` → see all 16 titles. *Done 2026-08-09: `SELECT id, title … ORDER BY id` + `fetchall`; `coverage.html` `{% for row in rows %}` with `row["title"]`. Predicted ul-of-titles correctly; verified 200 + 16 `<li>`s. Quiz: `fetchall` because many rows (correct).*
+- [x] **7.2 — Card counts with aggregation.** For each spec point, show how many cards it has (`COUNT` + `GROUP BY`, keep zero-card points). Visible: Electricity shows `10`; empty points show `0`. *Done 2026-08-09: `LEFT JOIN` + `COUNT(c.id) AS card_count` + `GROUP BY sp.id`; template shows title + count. Verified Electricity `10`, Particles `0`. Slowed down on SQL meaning; articulated `ON` as gluing card `spec_point_id` to spec `id` (FK match).*
+- [x] **7.3 — Due-today counts.** Per point, count cards that are due now (same “due” idea as study mode). Visible: after rating some Electricity cards, due count drops below total. *Done 2026-08-09: correlated subquery with study’s `NOT IN (… next_due_at > ?)`; template shows `card_count` + `due_count`. Predicted Electricity 10/0 correctly. Quiz: never-reviewed card is due because no `next_due_at` exists yet (correct).*
+- [x] **7.4 — Last reviewed.** `reviews` has no reviewed-at yet — add one, write it on rate, show `MAX(...)` per point (or “never”). Visible: a recently rated point shows a timestamp; never-reviewed points say so. *Done 2026-08-09: `ALTER … ADD COLUMN reviewed_at`; study INSERT writes it; coverage `MAX(r.reviewed_at)` + template if/else → timestamp vs “never”. Quiz: old rows stay NULL (correct). Verified after forcing one due card + rating.*
+- [x] **7.5 — Highlight zero-card points.** Template + CSS mark points with `0` cards so gaps jump out. Visible: non-Electricity rows stand out at a glance. *Done 2026-08-09: `{% if row["card_count"] == 0 %}class="no-cards"{% endif %}` + `.no-cards { color: cyan; }`. Quiz: Electricity (10 cards) should not get the class — it’s total cards not due (correct). Confirmed empty topics stand out.*
+- [x] **7.6 — Make “what next?” obvious.** Light polish (readable layout, link into `/study?spec_point=…` and/or `/spec/<id>`). Visible: section deliverable met — you can open `/coverage` and decide what to revise next. *Done 2026-08-09: title → `url_for('spec_point', …)`; Study → `url_for('study', spec_point=…)`. Debugged stale/broken href that requested `/url_for(...` as a path (missing `{{ }}`); nested quotes clarified with `row['id']`. Quiz: study filter is query param on `/study` (correct).*
+
+**Section 7 complete 2026-08-09.** Deliverable met: `/coverage` shows per-point card count, due count, last reviewed; zero-card points highlighted; links into spec + study so you can decide what to revise next.
+
 
 ### Section 8 — Tests
 
