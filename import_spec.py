@@ -1,6 +1,3 @@
-"""Task 4.4 — seed spec_points from specs/physics.json
-Run:  python import_spec.py
-"""
 import json
 import sqlite3
 

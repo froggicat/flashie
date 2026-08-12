@@ -14,14 +14,14 @@ def test_coverage():
     assert response.status_code == 200
     assert "Coverage" in response.get_data(as_text=True)
 
-def test_study_spec_point_16():
+def test_study_spec_point_1():
     client = app.test_client()
-    response = client.get("/study?spec_point=16")
+    response = client.get("/study?spec_point=1")
     assert response.status_code == 200
     assert "Studying" in response.get_data(as_text=True)
 
-def test_spec_16():
+def test_spec_1():
     client = app.test_client()
-    response = client.get("/spec/16")
+    response = client.get("/spec/1")
     assert response.status_code == 200
-    assert "Electricity" in response.get_data(as_text=True)
+    assert "Cyber" in response.get_data(as_text=True)

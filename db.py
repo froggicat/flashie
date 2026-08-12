@@ -22,13 +22,6 @@ def load_spec_tree():
     conn.close()
 
     # --- rebuild nested tree from flat rows ---
-    # Idea:
-    # 1. Make a dict: nodes_by_id[id] = {"title": ..., "children": []}
-    # 2. Walk every row again:
-    #      - if parent_id is None → it's a root → append to roots list
-    #      - else → append this node onto nodes_by_id[parent_id]["children"]
-    # 3. Return roots
-
     nodes_by_id = {}
     roots = []
 

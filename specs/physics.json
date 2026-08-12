@@ -1,71 +1,28 @@
 [
     {
-        "title": "Particles and radiation",
+        "title": "3.6 Cyber security",
         "children" : [
             {
-                "title": "Atomic structure",
+                "title": "3.6.1 Fundamentals of cyber security",
                 "children" : []
             },
-            
             {
-                "title": "Radioactivity",
+                "title": "3.6.2 Cyber security threats",
                 "children" : [
                     {
-                        "title": "Alpha",
+                        "title": "3.6.2.1 Social engineering",
                         "children" : []
                     },
                     {
-                        "title": "Beta",
-                        "children" : []
-                    },
-                    {
-                        "title": "Gamma",
+                        "title": "3.6.2.2 Malicious software",
                         "children" : []
                     }
                 ]
             },
             {
-                "title": "Nuclear Physics",
+                "title": "3.6.3 Methods to detect prevent cyber security threats",
                 "children" : []
-            }            
+            }
         ]
-    },
-    {
-        "title": "Waves",
-        "children" : [
-            {
-                "title": "Wave properties",
-                "children" : []
-            },
-            {
-                "title": "Wave motion",
-                "children" : []
-            },
-            {
-                "title": "Wave interference",
-                "children" : []
-            } 
-        ]
-    },
-    {
-        "title": "Mechanics and materials",
-        "children" : [
-            {
-                "title": "Kinematics",
-                "children" : []
-            },
-            {
-                "title": "Dynamics",
-                "children" : []
-            },
-            {
-                "title": "Work, energy and power",
-                "children" : []
-            }  
-        ]
-    },
-    {
-        "title": "Electricity",
-        "children" : []
     }
 ]
