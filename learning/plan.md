@@ -195,6 +195,17 @@ Each section builds on the last. Each ends with something visibly working. I do 
 
 **Why now (and not earlier):** I now have three features worth testing and one pure function (the scheduler) that is *ideal* for demonstrating unit tests. Testing before this would be testing very little.
 
+**Tasks** (each ends in something visibly working):
+
+- [x] **8.1 — Install `pytest` & pin it.** Add pytest to the venv and `requirements.txt`. Visible: `pytest --version` prints a version; `requirements.txt` has a pinned `pytest==…` line. *Done 2026-08-11: first `pip install` landed in pyenv (broken `.venv/bin/pip` shebang still pointed at old `flashcard-app` path); dug into `#!` + `python -m pip`; pinned `pytest==9.1.1` + `pluggy==1.6.0` (caught single `=`); recreated `.venv` from `requirements.txt` → shebang now `/home/amalia/flashie/.venv/bin/python3`; `.venv/bin/pytest --version` → 9.1.1.*
+- [x] **8.2 — First scheduler unit test.** Create `tests/test_scheduler.py` with one test that calls `next_due_at` with a fixed `now` and a known rating, and asserts the ISO date. Visible: `pytest` runs → 1 passed. *Done 2026-08-12: authored `test_rating_3_is_nine_days_later`; first assert quoted source text (fixed to `.isoformat()` call); collection hit `ModuleNotFoundError: scheduler` → added `pytest.ini` with `[pytest]` + `pythonpath = .` (after `/flashie` mis-path); `.pytest_cache/` gitignored. `.venv/bin/pytest -v` → 1 passed.*
+- [x] **8.3 — More scheduler cases.** Add a few more input/output cases (e.g. rating 1 and 5). Visible: `pytest` → several passed, still all green. *Done 2026-08-12: added `test_rating_1_…` (→ Aug 9) and `test_rating_5_…` (→ Sep 2); quiz — one fail isolates that input (B, correct); Amalia ran `.venv/bin/pytest -v` herself → 3 passed in 0.02s.*
+- [x] **8.4 — Flask test client, first smoke.** Use Flask’s test client to GET `/` and assert status 200. Visible: that smoke test passes without starting `flask run` by hand. *Done 2026-08-12: authored `tests/test_routes.py` with `app.test_client()` + `client.get("/")` + `status_code == 200`; quiz — unit vs smoke in own words (correct); pytest → 4 passed.*
+- [x] **8.5 — Smoke the other routes.** Same idea for `/coverage`, `/study?spec_point=…`, `/spec/<id>`. Visible: each returns 200 (or a deliberate empty/message page you already handle). *Done 2026-08-12: authored three smokes in `test_routes.py`; quiz — `spec_point=16` is query param (correct); pytest → 7 passed.*
+- [x] **8.6 — Assert expected content.** Strengthen smokes so responses contain something you recognize (e.g. a known title, “Coverage”, card front text). Visible: `pytest` all green in one command — section deliverable met. *Done 2026-08-12: content asserts — home “Spec Companion”, coverage “Coverage”, study “Studying”, spec “Electricity”; quiz — 200 can still be wrong content (correct); pytest → 7 passed.*
+
+**Section 8 complete 2026-08-12.** Deliverable met: `pytest` green — scheduler unit tests (ratings 1/3/5) plus route smokes (`/`, `/coverage`, `/study?spec_point=…`, `/spec/<id>`) with status 200 and recognizable body text.
+
 ### Section 9 — Auth + deployment
 
 **What I'll learn:** HTTP basic auth via Flask's `before_request` hook, environment variables and secrets management, Dockerfile basics (base image, install layer, copy code, entrypoint), `fly.toml`, mounted volumes, `flyctl deploy`, one CSS media query for mobile.

@@ -27,3 +27,5 @@ Thumbs.db
 # Editor state — per-developer preferences, not part of the project.
 .vscode/
 .idea/
+
+.pytest_cache/

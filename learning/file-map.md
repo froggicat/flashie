@@ -37,7 +37,7 @@ The repo root holds git internals, the `.gitignore` fence, and — from `plan.md
 | Path | Status | What it is and why it exists |
 |---|---|---|
 | `.git/` | parked | Git's internal database for this repo — every commit, every branch, every object lives here. Machine-managed; **never edit by hand**. Created by `git init`. Revisit in task 1.6 (push) when we open `refs/` and see what `HEAD` actually points at. |
-| `.gitignore` | known | Fence of files git must pretend don't exist: `.venv/`, `__pycache__/`, `*.pyc`, `db.sqlite`, `.env`, OS junk, editor state. Manually maintained; edit whenever a new class of generated/private file starts appearing. |
+| `.gitignore` | known | Fence of files git must pretend don't exist: `.venv/`, `__pycache__/`, `*.pyc`, `db.sqlite`, `.env`, `.pytest_cache/`, OS junk, editor state. Manually maintained; edit whenever a new class of generated/private file starts appearing. |
 | `.vscode/` | known | Per-machine editor state for Cursor/VSCode. Fenced by `.gitignore` so it never ships with the repo. |
 | &nbsp;&nbsp;`.vscode/settings.json` | known | Two-line file that sets `editor.fontSize` to 20 — my local reading-comfort preference, not project config. |
 | `.venv/` | known | The Python virtual environment for this project — its own private interpreter, `pip`, and package pile. Gitignored not for privacy but because it's huge, machine-specific (hardcodes my absolute paths + Python version), and can be perfectly regenerated from `requirements.txt` (task 1.3). Delete it → recreate with `python3 -m venv .venv` + `pip install -r requirements.txt`. |
@@ -46,7 +46,7 @@ The repo root holds git internals, the `.gitignore` fence, and — from `plan.md
 | &nbsp;&nbsp;`.venv/lib/` | known | TODO(you): one sentence — when you `pip install flask` (next task), which subfolder inside here will it land in, and why does that make deletion of `.venv/` a full reset? It drops it in a folder called site-packages|
 | &nbsp;&nbsp;`.venv/pyvenv.cfg` | known | 4-line pointer file recording which base Python this venv was cloned from (here: pyenv's 3.12.8). Machine-written by `python -m venv`; never hand-edited. |
 | &nbsp;&nbsp;`.venv/include/`, `.venv/lib64` | parked | C-headers folder and a `lib64 → lib` symlink. Packaging plumbing for building C extensions on 64-bit Linux. Revisit only if a `pip install` ever fails complaining about missing headers. |
-| `requirements.txt` | known | The source-of-truth for what's in `.venv/`: 7 pinned lines (Flask + its 6 transitive deps). Regenerate with `pip freeze > requirements.txt` after any `pip install`. Reproduce the env on a fresh machine with `pip install -r requirements.txt`. Committed; `.venv/` is not. |
+| `requirements.txt` | known | Source-of-truth for `.venv/`: Flask stack + `pytest==9.1.1` + `pluggy==1.6.0` (task 8.1). Reinstall with `pip install -r requirements.txt`. Committed; `.venv/` is not. Recreated 2026-08-11 after folder rename broke old shebangs. |
 | `app.py` | known | Flask entry point. `/` tree; `/spec/<id>` cards; `/study` due+rate; `/coverage` dashboard (counts, last reviewed, links out). Section 7 complete. |
 | `db.py` | known | DB access layer. `get_connection()` opens `db.sqlite` with `Row` factory + FK pragma. `load_spec_tree()` SELECTs flat `spec_points` and rebuilds nested `{id, title, children}` nodes (two-pass). Authored 2026-08-05; `id` field added 2026-08-07 for `/spec/<id>` links. |
 | `scheduler.py` | known | Pure scheduler: `next_due_at(rating, now)` → ISO string of `now + rating² days`. Authored 2026-08-08 in task 6.5. |
@@ -69,6 +69,11 @@ The repo root holds git internals, the `.gitignore` fence, and — from `plan.md
 | `db.sqlite` | known | SQLite DB (gitignored). Tables: `spec_points` (seeded), `cards` (10 Electricity), `reviews` (includes `reviewed_at` from task 7.4; older rows may be NULL). |
 | `import_spec.py` | known | One-shot seed script: loads `specs/physics.json`, recursively INSERTs into `spec_points` with correct `parent_id`. Re-runnable (clears rows first). Authored 2026-08-05 in task 4.4. |
 | `explore_db.py` | known | Scratch schema script — created cards/reviews; task 7.4 used it to `ALTER TABLE` add `reviewed_at`. |
+| `pytest.ini` | known | pytest config: `[pytest]` + `pythonpath = .` so tests can `from scheduler import …`. Authored 2026-08-12 in task 8.2. |
+| `.pytest_cache/` | generated | pytest’s cache (last-failed, nodeids). Produced by running pytest. Gitignored. Do not edit. |
+| `tests/` | known | Folder for pytest test modules. Created 2026-08-12 in task 8.2. |
+| &nbsp;&nbsp;`tests/test_scheduler.py` | known | Unit tests for `next_due_at`: rating 3 → +9 days, rating 1 → +1 day, rating 5 → +25 days (Sep 2). Authored 2026-08-12 in tasks 8.2–8.3. |
+| &nbsp;&nbsp;`tests/test_routes.py` | known | Route smokes: 200 + body text (Spec Companion / Coverage / Studying / Electricity). Authored 2026-08-12 in tasks 8.4–8.6. |
 
 ---
 
@@ -92,7 +97,7 @@ Nothing else exists in the repo yet. As soon as a new file or folder appears, it
 
 Expected upcoming (added on first sight, not now):
 
-- `tests/` — `pytest` suite (`plan.md` §Section 8 onward).
+- More files under `tests/` as §8 grows (route smoke tests in 8.4+).
 - `Dockerfile`, `fly.toml` — infra (`plan.md` §Section 9).
 - `.env` — local secrets file (`plan.md` §Section 9). Will exist on disk but *never* on GitHub thanks to `.gitignore`.
 
