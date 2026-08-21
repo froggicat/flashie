@@ -1,3 +1,5 @@
+!! main branch currently not being worked on - v2-multi-user is being worked on at the moment !!
+
 # Spec Companion
 
 A personal flashcard app for A-level revision. Every card is attached to a point in an official exam specification, so you can see what you’ve covered and what still has gaps.
