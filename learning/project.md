@@ -34,7 +34,7 @@ A personal, single-user web app where every flashcard is attached to a specific 
 - **Templating:** Jinja2 (comes with Flask)
 - **Frontend:** Server-rendered HTML + vanilla JS (no React, no build step)
 - **Styling:** Plain CSS, one file
-- **Deployment:** Fly.io free tier + mounted volume for SQLite persistence
+- **Deployment:** PythonAnywhere free tier (persistent home directory for SQLite; no card). Docker practiced locally; not required for v1 host.
 - **Auth:** HTTP basic auth, one password from an environment variable
 
 No frameworks or libraries beyond this list without a very good reason.
@@ -184,16 +184,15 @@ Seven distinct pieces make this project work. Every future feature sits on top o
 
 *Why this project needs it:* The moment the app is public, anyone who guesses the URL can read *and edit* my revision data. ~5 lines of Flask + a password in an env var is enough for a personal tool.
 
-### 7. Deployment — Fly.io + Docker
+### 7. Deployment — PythonAnywhere (+ Docker practiced locally)
 
 - **Deployment:** running my code somewhere always-on and reachable at a fixed URL.
-- **Hosting provider:** rents me a slice of a data centre. Fly.io here. (Vercel is popular but aimed at frontend / serverless work — a poor fit for a Flask app with a persistent SQLite file.)
-- **Dockerfile:** the *recipe* I write for packaging my app — which base OS, which dependencies, which code to include, how to start it.
-- **Image:** the *built package* produced from the Dockerfile.
-- **Container:** a *running instance* of that image, isolated from the host machine.
-- **Volume:** a persistent disk attached to my container. Without one, SQLite gets wiped on every restart. With one, it survives.
+- **Hosting provider:** rents me a slice of a data centre. **PythonAnywhere** for v1 (free, no card; Flask + files on disk). Fly.io was the original pick until its free tier went away.
+- **WSGI file:** the small Python file PA uses to load your Flask `app` object (their “how do I start your code?” hook).
+- **Dockerfile / image / container:** still useful concepts (practiced in §9.4). Not how v1 is hosted on PA.
+- **Persistence on PA:** your home directory keeps `db.sqlite` across reloads — same *job* a Fly volume would do, different mechanism.
 
-*Why this project needs it:* "Usable from anywhere" requires always-on hosting. The Dockerfile makes the app run identically on my laptop and on Fly's servers. The volume is what keeps my data alive across restarts.
+*Why this project needs it:* "Usable from anywhere" requires hosting that isn’t your laptop. PA’s free tier fits a personal Flask + SQLite app without a payment method.
 
 ## Milestones (build order)
 
@@ -203,7 +202,7 @@ Each milestone ends with something visibly working. Do them in order. Do not ski
 2. **Make cards** (day 3–5) — click a spec point, get a form, add a card, see it listed under that point.
 3. **Study** (day 6–9) — `/study?spec_point=<id>` shows one card at a time, space to flip, 1–5 to rate, writes a `reviews` row with `next_due_at`.
 4. **See coverage** (day 10–14) — `/coverage` page: card count, due count, last-reviewed per spec point; zero-card points highlighted.
-5. **On the internet** (day 15–18) — HTTP basic auth via `APP_PASSWORD` env var, Dockerfile + fly.toml, mounted volume at `/data` for `db.sqlite`, one CSS media query for mobile. Deploy to Fly.io.
+5. **On the internet** (day 15–18) — HTTP basic auth via `APP_PASSWORD` env var, mobile CSS, deploy to PythonAnywhere (WSGI + static + SQLite in home dir). Dockerfile practiced locally; not required for PA.
 
 After Milestone 5, **stop building and use it for one full week of real revision.** No code changes during that week. Keep an `IDEAS.md` of frictions I hit. Then pick the *single* next feature from the parking lot.
 

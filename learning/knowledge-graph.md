@@ -127,18 +127,20 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 | Static files served by Flask (CSS/JS) | practicing | 2026-08-04 | 2026-08-04 | Task 3.1: CSS. Task 3.5: same pattern for `tree.js` via `url_for`; script placed after `{% block content %}` so buttons exist when it runs. |
 | `url_for` — Flask builds a URL from an endpoint name | practicing | 2026-08-04 | 2026-08-09 | Prior. 2026-08-09 task 7.6: coverage `url_for('spec_point'…)` + `url_for('study', spec_point=…)`; missing `{{ }}` made the browser request `/url_for(...` as a path (404). |
 | Vanilla-JS keyboard event listeners (`keydown`) | practicing | 2026-08-08 | 2026-08-08 | 6.3 Space flip. 2026-08-08 task 6.6: keys `"1"`–`"5"` trigger rating button `.click()`; learned JS uses `else if` not `elif`, and `e.key` for digit characters. |
-| CSS media query for mobile | seed | — | — | Coming in plan.md §Section 9. |
+| CSS media query for mobile | practicing | 2026-08-13 | 2026-08-13 | 2026-08-13 task 9.3: authored `@media`; wide=pink, narrow=olive; viewport meta. 9.6: used deployed app on a real phone. |
 | Why "no build step" is a real choice (vs React/Vue/bundler) | introduced | 2026-08-01 | 2026-08-01 | plan.md §Section 4 (Frontend approach) argues this. |
 
 ## 6. Auth & secrets
 
 | Concept | Status | Introduced | Last reviewed | Evidence |
 |---|---|---|---|---|
-| Authentication as a concept (proving I am who I claim) | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Authentication. |
-| HTTP basic auth (browser prompt, cached per device) | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Authentication. |
-| Environment variable — value stored outside my code | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Authentication. |
-| Secrets *must not* be committed to git | introduced | 2026-08-01 | 2026-08-01 | project.md §Authentication ties env vars directly to git safety. |
-| Flask `before_request` hook for site-wide auth | seed | — | — | Coming in plan.md §Section 9. |
+| Authentication as a concept (proving I am who I claim) | practicing | 2026-08-01 | 2026-08-13 | 2026-08-13 task 9.2: gated whole app; correct password → home; missing/wrong → 401. |
+| HTTP basic auth (browser prompt, cached per device) | practicing | 2026-08-01 | 2026-08-13 | 2026-08-13 task 9.2: system browser shows login dialog; Cursor Simple Browser does not (only 401 body). Verified login with env password. |
+| Environment variable — value stored outside my code | practicing | 2026-08-01 | 2026-08-13 | 2026-08-13 task 9.1: `os.environ.get("APP_PASSWORD")` on `/auth-check`; unset → missing message; `export APP_PASSWORD=…` → length 14. Reused in 9.2 auth gate. |
+| `export` — shell var vs env passed to child processes | practicing | 2026-08-13 | 2026-08-13 | 2026-08-13 task 9.1: without `export`, shell saw the var but Python got `None`; with `export`, Flask saw it. Also: `VAR=x echo $VAR` expands in the parent before the child runs. |
+| Secrets *must not* be committed to git | practicing | 2026-08-01 | 2026-08-13 | 2026-08-13 task 9.1 quiz: hard-coding password in open-source `app.py` lets anyone log in (correct). Secret lives in env, not in the file. |
+| Flask `before_request` hook for site-wide auth | practicing | 2026-08-13 | 2026-08-13 | 2026-08-13 task 9.2: authored `@app.before_request`; quiz — auth only in `home()` leaves `/coverage` open (correct). Fixed `request.authorization is None` before reading `.password`. |
+| `WWW-Authenticate` response header (how browsers know to prompt) | practicing | 2026-08-13 | 2026-08-13 | 2026-08-13 task 9.2: 401 + `Basic realm="Spec Companion"`; curl confirmed header present. |
 
 ## 7. Deployment & infra
 
@@ -146,10 +148,16 @@ Statuses only ever **upgrade**, and only on **evidence of something I actually s
 |---|---|---|---|---|
 | Deployment — always-on, fixed URL | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Deployment. |
 | Hosting provider (rents me a slice of a data centre) | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Deployment. |
-| Fly.io specifically (and why not Render / Vercel / PythonAnywhere) | introduced | 2026-08-01 | 2026-08-01 | plan.md §Section 5 (Hosting) walks through alternatives. |
-| Docker — the container idea, why it exists | introduced | 2026-08-01 | 2026-08-01 | project.md §Deployment defines container / image / Dockerfile. |
-| Dockerfile — the *recipe* | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Deployment. |
-| Image vs container (built package vs running instance) | introduced | 2026-08-01 | 2026-08-01 | Distinction drawn in project.md §Deployment. |
+| Fly.io specifically (and why not Render / Vercel / PythonAnywhere) | introduced | 2026-08-01 | 2026-08-13 | Original pick; 2026-08-13 switched away — no lasting free tier / card required. Still useful contrast. |
+| PythonAnywhere as host (free Flask + persistent files) | practicing | 2026-08-13 | 2026-08-13 | 2026-08-13 task 9.6: used live on phone — login, study flow; static mapping; SQLite persists in home dir. |
+| WSGI file (how a host loads your Flask `app`) | practicing | 2026-08-13 | 2026-08-13 | 2026-08-13 task 9.5: edited PA WSGI — `sys.path` + `from app import app as application`. |
+| Absolute vs relative file paths for SQLite on a host | practicing | 2026-08-13 | 2026-08-13 | 2026-08-13 task 9.5: relative `db.sqlite` → empty DB / no `spec_points`; fixed with `dirname(__file__)`. |
+| Docker — the container idea, why it exists | practicing | 2026-08-01 | 2026-08-13 | 2026-08-13 task 9.4: built image + ran container locally; app reachable via `-p 5000:5000`. |
+| Dockerfile — the *recipe* | practicing | 2026-08-01 | 2026-08-13 | 2026-08-13 task 9.4: authored Dockerfile (FROM → pip → COPY → CMD with `0.0.0.0`). |
+| Image vs container (built package vs running instance) | practicing | 2026-08-01 | 2026-08-13 | 2026-08-13 task 9.4: own words — build makes image, run makes container (correct). |
+| Container networking — `0.0.0.0` vs `127.0.0.1`, `-p` publish | practicing | 2026-08-13 | 2026-08-13 | 2026-08-13 task 9.4: corrected — `127.0.0.1` inside container is unreachable from host even on same laptop; need `0.0.0.0` + `-p`. |
+| Docker daemon socket permissions (`docker.sock`) | practicing | 2026-08-13 | 2026-08-13 | 2026-08-13 task 9.4: permission denied without `sudo`; used `sudo docker build/run`. |
+| `.dockerignore` | practicing | 2026-08-13 | 2026-08-13 | 2026-08-13 task 9.4: authored to exclude `.venv/`, `.git/`, caches from build context. |
 | Volume — persistent disk that survives restarts | introduced | 2026-08-01 | 2026-08-01 | Defined in project.md §Deployment. |
 | `fly.toml` — Fly-specific config | seed | — | — | Coming in plan.md §Section 9. |
 | `flyctl deploy` — pushing code to Fly | seed | — | — | Coming in plan.md §Section 9. |

@@ -40,13 +40,15 @@ Chosen because it has no build step (no npm, no bundler), keeps the mental model
 
 *When it would stop being right:* htmx as soon as I'm reloading whole pages just to update one section. React only if the UI becomes genuinely rich-interactive (drag-and-drop, real-time canvas, complex client-side state).
 
-### 5. Hosting — **Fly.io + Docker**
+### 5. Hosting — **PythonAnywhere (free tier)**
 
-Chosen because Fly's free tier includes persistent volumes (which SQLite needs to survive restarts), it deploys from git, and Docker is a career-long skill I'll use on every future project. Requires a payment method on file; using a virtual/prepaid card and setting billing alerts keeps that safe.
+**Changed 2026-08-13:** originally **Fly.io + Docker**. Fly no longer offers a lasting free tier (card required after a short trial). Explicit choice: stay free / no card → switch to PythonAnywhere.
 
-*Considered:* Render (no persistent disk on free tier — would force us off SQLite), PythonAnywhere (free without a card, but no Docker learning), Vercel (aimed at frontend/serverless — poor fit for a Flask app with a persistent SQLite file).
+Chosen because the free tier needs no payment method, Flask + a persistent home directory fits SQLite, and the deploy path is simple (upload/git + WSGI config). Docker from task 9.4 stays in the repo as learned skill, but is **not** how we ship v1.
 
-*When it would stop being right:* when I'm running multiple services that need proper orchestration, when traffic warrants dedicated infra, or when I want a fully managed platform and don't mind paying.
+*Considered:* Fly.io (best Docker/volume learning, but paywall), Render (no persistent disk on free — breaks SQLite), Vercel (wrong shape for Flask + SQLite), home + Cloudflare Tunnel (free but laptop must stay on).
+
+*When it would stop being right:* when I need custom Docker/networking, more reliable always-on than PA free allows, or I'm willing to pay for Fly/a VPS.
 
 ---
 
@@ -208,11 +210,22 @@ Each section builds on the last. Each ends with something visibly working. I do 
 
 ### Section 9 — Auth + deployment
 
-**What I'll learn:** HTTP basic auth via Flask's `before_request` hook, environment variables and secrets management, Dockerfile basics (base image, install layer, copy code, entrypoint), `fly.toml`, mounted volumes, `flyctl deploy`, one CSS media query for mobile.
+**What I'll learn:** HTTP basic auth via Flask's `before_request` hook, environment variables and secrets management, Dockerfile basics (practiced locally in 9.4), one CSS media query for mobile, deploying a Flask app on **PythonAnywhere** (WSGI file, static files, persistent home directory for SQLite).
 
-**Deliverable:** I open the deployed URL from my phone during a free period at school. Log in once with my password. Add a card. Study it. Every part of the app is now running on Fly.io, not my laptop.
+**Deliverable:** I open the deployed URL from my phone during a free period at school. Log in once with my password. Add a card. Study it. Every part of the app is now running on PythonAnywhere, not my laptop.
 
 **Why last:** deployment is where every previous section's decisions come home to roost. Doing it earlier means every bug is *both* an app bug *and* an infra bug, which is confusing while learning.
+
+**Tasks** (each ends in something visibly working):
+
+- [x] **9.1 — Password from an environment variable.** Read `APP_PASSWORD` via `os.environ` (no auth yet — just prove the app can see a secret that isn't hard-coded). Visible: set the var in your shell → a tiny check page / print shows it's set; unset it → different message. `.env` stays gitignored (already fenced). *Done 2026-08-13: `/auth-check` via `os.environ.get("APP_PASSWORD")`; unset → missing message; `export` + set → `length 14`. Learned shell var ≠ env (need `export` for Flask/Python to see it); `VAR=x echo $VAR` expands before the child runs.*
+- [x] **9.2 — HTTP basic auth with `before_request`.** Gate every route: browser pops a username/password prompt; wrong/missing → 401; correct password (from env) → app works as before. Visible: open `/` → login dialog → after success, home page loads. *Done 2026-08-13: `@app.before_request` + `request.authorization` vs `APP_PASSWORD`; 401 + `WWW-Authenticate: Basic realm=…`. Debugged `None.password` (need `auth and …`); Cursor Simple Browser shows 401 body with no popup — system browser does.*
+- [x] **9.3 — One CSS media query for mobile.** Make the layout readable on a narrow phone-width viewport (spacing, font size, or study buttons). Visible: shrink the browser (or phone) → page still usable, not cramped 1998 desktop. *Done 2026-08-13: viewport meta in `base.html`; `@media (max-width: 600px)` in `style.css` (margin, olive smoke-test bg, flashcard + h1 tweaks). Wide = pink; narrow = olive. Quiz gap: media queries aren’t specificity — unmatched queries simply don’t apply.*
+- [x] **9.4 — Dockerfile that runs the app.** Write a Dockerfile (base image → install deps → copy code → start command); build and run the container locally. Visible: `docker run` → hit the mapped port → same app (auth included). *Done 2026-08-13: `Dockerfile` + `.dockerignore`; `sudo docker build -t flashie .`; `docker run --rm -p 5000:5000 -e APP_PASSWORD=… flashie`. Learned `0.0.0.0` vs `127.0.0.1` in containers; socket permission → `sudo`; browser caches basic auth (401 then silent 200). Verified 401→200 in container logs. Kept as skill practice — v1 host is PythonAnywhere, not Docker-on-Fly.*
+- [x] **9.5 — PythonAnywhere account + code + WSGI.** Create a free PA account; get the project onto their servers (upload or git); create a Flask web app; point the WSGI file at your `app` object; set `APP_PASSWORD` in PA so auth works. Visible: open `https://<you>.pythonanywhere.com` → login prompt (or 401 body) → after password, home page loads. *Done 2026-08-13: zip upload → Manual web app → WSGI `from app import app as application` + `APP_PASSWORD` in WSGI; login worked; 500 until absolute `DB_PATH` via `__file__` (relative path hit empty DB). Home loads.*
+- [x] **9.6 — Static files, SQLite data, use from your phone.** Map `/static` if needed; ensure `db.sqlite` lives in your PA home (seed/upload if empty); reload; from your phone: log in, add or study a card. Visible: section deliverable met — the whole app runs on PythonAnywhere, not your laptop. *Done 2026-08-13: static mapped; phone login + use works. Friction noted: Space-only flip awkward on phone — tap-to-flip next.*
+
+**Section 9 complete 2026-08-13.** Deliverable met: deployed on PythonAnywhere (free, no card); HTTP basic auth; mobile CSS; usable from phone. Docker practiced locally in 9.4; hosting decision switched from Fly → PA mid-section.
 
 ---
 

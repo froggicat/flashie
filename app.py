@@ -1,9 +1,20 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, Response
 from db import load_spec_tree, get_connection
 from scheduler import next_due_at
 from datetime import datetime
+import os
 
 app = Flask(__name__)
+
+
+@app.before_request
+def real_auth_check():
+    password=os.environ.get("APP_PASSWORD")
+    auth=request.authorization
+    if auth and auth.password==password:
+        return
+    else:
+        return Response("Wrong password.", 401, {"WWW-Authenticate": 'Basic realm="Spec Companion"'})
 
 @app.route("/")
 def home():
@@ -92,7 +103,8 @@ def study():
     conn.close()
 
     if card == None:
-        return "All done for now"
+        #fix properly !!
+        return render_template("home.html")
     else:
         return render_template("study.html", title=output["title"], card=card, spec_point_id=raw_id)
 
