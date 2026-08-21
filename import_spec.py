@@ -5,7 +5,7 @@ connection = sqlite3.connect("db.sqlite")
 cursor = connection.cursor()
 cursor.execute("PRAGMA foreign_keys = ON")
 
-data = json.load(open("specs/physics.json"))
+data = json.load(open("specs/specification.json"))
 
 
 cursor.execute("PRAGMA foreign_keys = OFF")

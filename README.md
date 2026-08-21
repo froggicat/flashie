@@ -1,8 +1,8 @@
-# Spec Companion
+# Flashie
 
 A personal flashcard app for A-level revision. Every card is attached to a point in an official exam specification, so you can see what you’ve covered and what still has gaps.
 
-Built as a single-user Flask app I can use from a phone, a Chromebook, or a laptop. Not a shared deck marketplace — just a revision tool tied to the spec.
+Built (so far) as a single-user Flask app I can use from a phone, a Chromebook, or a laptop. Not a shared deck marketplace — just a revision tool tied to the spec.
 
 ## Why
 
@@ -18,7 +18,7 @@ Generic flashcard decks are rarely aligned to the exam board spec. Homemade Anki
 
 Scheduling is deliberately simple: `next_due_at = now + rating² days`. Rating 3 comes back in 9 days; rating 5 in 25.
 
-The current spec file (`specs/physics.json`) is a nested JSON tree — edit it, then re-seed the database. Right now it holds Computer Science cyber-security topics for real revision use.
+The current spec file (`specs/specification.json`) is a nested JSON tree — edit it, then re-seed the database. Right now it holds Computer Science cyber-security topics for real revision use.
 
 ## Stack
 
@@ -109,8 +109,8 @@ Scheduler unit tests plus smoke tests for `/`, `/coverage`, `/study`, and `/spec
 app.py              Flask routes (home, spec, study, coverage, auth)
 db.py               SQLite connection + rebuild of the spec tree
 scheduler.py        next_due_at(rating, now)
-import_spec.py      loads specs/physics.json into spec_points
-specs/physics.json  nested spec tree
+import_spec.py      loads specs/specification.json into spec_points
+specs/specification.json  nested spec tree
 templates/          Jinja pages
 static/             CSS + tree/study JavaScript
 tests/              pytest
